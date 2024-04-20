@@ -29,8 +29,13 @@ public class DatabaseFuncoes
                     "CREATE TABLE if NOT EXISTS clientes (" +
                     "clientid SERIAL, " +
                     "nome VARCHAR(50), " +
-                    "data_nascimento VARCHAR(12), " +
+                    "data_nascimento VARCHAR(10), " +
                     "cpf VARCHAR(14), " +
+                    "numero_cartao VARCHAR (19), " +
+                    "cvv VARCHAR (3), " +
+                    "data_cartao VARCHAR (7), " +
+                    "data_matricula VARCHAR (10), " +
+                    "plano INT, " +
                     "PRIMARY KEY (clientid));";
             statement = conexao.createStatement();
             statement.executeUpdate(query);
@@ -89,14 +94,17 @@ public class DatabaseFuncoes
             System.out.println("No método createRowTreinoLista" + e);
         }
     }
-    public void createRowClientes(Connection conexao, String nome, String cpf, String dataNascimento)
+    public void createRowClientes(Connection conexao, String nome, String cpf, String dataNascimento,
+                                 String dataMatricula, String numeroCartao, String cvvCartao, String
+                                 dataCartao, int opcaoPlano)
     {
         Statement statement = null;
         try {
             String query = String.format(
                     "insert into " +
-                    "clientes (nome, data_nascimento, cpf) " +
-                    "values ('%s', '%s', '%s');", nome, dataNascimento, cpf);
+                    "clientes (nome, data_nascimento, cpf, data_matricula, numero_cartao, cvv, data_cartao, plano) " +
+                    "values ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d);", nome, dataNascimento, cpf, dataMatricula,
+                    numeroCartao, cvvCartao, dataCartao, opcaoPlano);
             statement = conexao.createStatement();
             statement.executeUpdate(query);
             System.out.println("cliente " + nome + " inserido");

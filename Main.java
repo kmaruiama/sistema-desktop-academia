@@ -24,7 +24,6 @@ public class Main
         String nome = scanner.nextLine();
         String cpf = scanner.nextLine();
         String dataNascimento = scanner.nextLine();
-        novaDatabase.createRowClientes(conexao, nome, cpf, dataNascimento);
         /*System.out.println("digite o n do cpf");
         String cpfBusca = scanner.nextLine();
         novaDatabase.printaClientes(conexao, cpfBusca);

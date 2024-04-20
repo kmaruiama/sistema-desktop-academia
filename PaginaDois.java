@@ -5,17 +5,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
 
 public class PaginaDois implements ActionListener {
 
+    int plano = 0;
     JButton planoSimples;
     JButton planoGold;
     JButton planoPremium;
 
     JButton inserirTudo;
 
+    JTextField nomeInserir;
+    JTextField cpfInserir;
+    JTextField dataInserir;
+    
+    JTextField dataMatriculaInserir;
+    
+    JTextField cartaoInserir;
+    JTextField cvvInserir;
+    JTextField dataCartaoInserir;
+
+
     JFrame frameCliente = new JFrame();
     Gui gui;
+
 
     PaginaDois(Gui gui)
     {
@@ -31,7 +45,7 @@ public class PaginaDois implements ActionListener {
         nomeTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
         nomeTitulo.setBounds(20, 20, 300, 20);
 
-        JTextField nomeInserir = new JTextField();
+        nomeInserir = new JTextField();
         nomeInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         nomeInserir.setBounds(20, 40, 450, 40);
         nomeInserir.setEditable(true);
@@ -41,7 +55,7 @@ public class PaginaDois implements ActionListener {
         cpfTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
         cpfTitulo.setBounds(20, 80, 300, 20);
 
-        JTextField cpfInserir = new JTextField();
+        cpfInserir = new JTextField();
         cpfInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         cpfInserir.setBounds(20, 100, 166, 40);
         cpfInserir.setEditable(true);
@@ -51,29 +65,29 @@ public class PaginaDois implements ActionListener {
         dataTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
         dataTitulo.setBounds(20, 140, 300, 20);
 
-        JTextField dataInserir = new JTextField();
+        dataInserir = new JTextField();
         dataInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         dataInserir.setBounds(20, 160, 120, 40);
         dataInserir.setEditable(true);
 
 
 
-        JLabel dataTreinoTitulo = new JLabel();
-        dataTreinoTitulo.setText("Digite a data de inicio do plano do cliente");
-        dataTreinoTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
-        dataTreinoTitulo.setBounds(20, 250, 300, 20);
+        JLabel dataMatriculaTitulo = new JLabel();
+        dataMatriculaTitulo.setText("Digite a data de inicio do plano do cliente");
+        dataMatriculaTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
+        dataMatriculaTitulo.setBounds(20, 250, 300, 20);
 
-        JTextField dataTreinoInserir = new JTextField();
-        dataTreinoInserir.setFont(new Font("Arial", Font.PLAIN, 15));
-        dataTreinoInserir.setBounds(20, 270, 120, 40);
-        dataTreinoInserir.setEditable(true);
+        dataMatriculaInserir = new JTextField();
+        dataMatriculaInserir.setFont(new Font("Arial", Font.PLAIN, 15));
+        dataMatriculaInserir.setBounds(20, 270, 120, 40);
+        dataMatriculaInserir.setEditable(true);
 
         JLabel cartaoTitulo = new JLabel();
         cartaoTitulo.setText("Digite o número do cartão do cliente");
         cartaoTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
         cartaoTitulo.setBounds(20, 310, 300, 20);
 
-        JTextField cartaoInserir = new JTextField();
+        cartaoInserir = new JTextField();
         cartaoInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         cartaoInserir.setBounds(20, 330, 166, 40);
         cartaoInserir.setEditable(true);
@@ -83,7 +97,7 @@ public class PaginaDois implements ActionListener {
         dataCartaoTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
         dataCartaoTitulo.setBounds(20, 370, 300, 20);
 
-        JTextField dataCartaoInserir = new JTextField();
+        dataCartaoInserir = new JTextField();
         dataCartaoInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         dataCartaoInserir.setBounds(20, 390, 60, 40);
         dataCartaoInserir.setEditable(true);
@@ -93,16 +107,11 @@ public class PaginaDois implements ActionListener {
         cvvTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
         cvvTitulo.setBounds(20, 430, 300, 20);
 
-        JTextField cvvInserir = new JTextField();
+        cvvInserir = new JTextField();
         cvvInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         cvvInserir.setBounds(20, 450, 60, 40);
         cvvInserir.setEditable(true);
-
-
-
-
-
-
+        
         planoSimples = new JButton();
         planoSimples.setBounds(325, 100, 120, 30);
         planoSimples.setText("Simples");
@@ -128,8 +137,8 @@ public class PaginaDois implements ActionListener {
         frameCliente.add(cpfInserir);
         frameCliente.add(dataTitulo);
         frameCliente.add(dataInserir);
-        frameCliente.add(dataTreinoTitulo);
-        frameCliente.add(dataTreinoInserir);
+        frameCliente.add(dataMatriculaTitulo);
+        frameCliente.add(dataMatriculaInserir);
         frameCliente.add(cartaoTitulo);
         frameCliente.add(cartaoInserir);
         frameCliente.add(dataCartaoTitulo);
@@ -143,7 +152,8 @@ public class PaginaDois implements ActionListener {
         frameCliente.setVisible(true);
 
 
-        frameCliente.addWindowListener(new WindowListener() {
+        frameCliente.addWindowListener(new WindowListener()
+        {
             @Override
             public void windowOpened(WindowEvent e) {
             }
@@ -167,6 +177,7 @@ public class PaginaDois implements ActionListener {
             public void windowDeactivated(WindowEvent e) {
             }
         });
+
         setupActionListeners();
     }
 
@@ -175,25 +186,104 @@ public class PaginaDois implements ActionListener {
         planoSimples.addActionListener(this);
         planoGold.addActionListener(this);
         planoPremium.addActionListener(this);
+        inserirTudo.addActionListener(this);
+        nomeInserir.addActionListener(this);
+        cpfInserir.addActionListener(this);
+        dataInserir.addActionListener(this);
+        dataMatriculaInserir.addActionListener(this);
+        cartaoInserir.addActionListener(this);
+        cvvInserir.addActionListener(this);
+        dataCartaoInserir.addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource()==planoSimples)
         {
+            plano = 1;
             planoSimples.setEnabled(false);
             planoGold.setEnabled(true);
             planoPremium.setEnabled(true);
         }
         if (e.getSource() == planoGold) {
+            plano = 2;
             planoGold.setEnabled(false);
             planoSimples.setEnabled(true);
             planoPremium.setEnabled(true);
         }
         if (e.getSource() == planoPremium) {
+            plano = 2;
             planoPremium.setEnabled(false);
             planoSimples.setEnabled(true);
             planoGold.setEnabled(true);
+        }
+        if (e.getSource() == inserirTudo)
+        {
+            // prep = preprocessado
+            boolean testaTudo;
+            int fechaOito = 0;
+            String nomePrep = nomeInserir.getText();
+            String cpfPrep = cpfInserir.getText();
+            String dataPrep = dataInserir.getText();
+            String dataMatriculaPrep = dataMatriculaInserir.getText();
+            String numeroCartaoPrep = cartaoInserir.getText();
+            String cvvPrep = cvvInserir.getText();
+            String dataCartaoPrep = dataCartaoInserir.getText();
+            ChecaConcordancia verificadorInput = new ChecaConcordancia();
+
+            //solução chinelona mas eu nao sabia como automatizar essa checagem visto que sao multiplas strings
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, nomePrep, 1, 1);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, cpfPrep, 2, 0);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, dataPrep, 3, 0);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, dataMatriculaPrep, 4, 0);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, numeroCartaoPrep, 5, 0);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, cvvPrep, 6, 0);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, cvvPrep, 7, 0);
+            if (testaTudo)
+            {
+                fechaOito++;
+            }
+            
+            if (plano == 0)
+            {
+                JOptionPane.showMessageDialog(frameCliente, "Não esqueça de selecionar qual plano você quer");
+            }
+            else
+            {
+                fechaOito++;
+            }
+            if (fechaOito == 8)
+            {
+                DatabaseFuncoes insereLocal = new DatabaseFuncoes();
+                Connection conexao = null;
+                conexao = insereLocal.conectaDb("paradigmas_database", "postgres", "admin");
+                insereLocal.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
+                                             dataCartaoPrep, plano);
+            }
         }
     }
 }

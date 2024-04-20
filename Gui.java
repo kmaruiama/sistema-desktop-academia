@@ -9,21 +9,31 @@ public class Gui implements ActionListener{
 
 
     JButton botaoBases;
+
+    JButton botaoEditarCliente;
     JFrame menuPrincipal = new JFrame();
 
     /*Serve para evitar a abertura de multiplas janelas de cadastro*/
     public int paginaDoisAbrir = 0;
+    public int menuClientesAbrir = 0;
 
         public Gui() {
             menuPrincipal.setTitle("Sistema de Academia");
             menuPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             menuPrincipal.setResizable(false);
             menuPrincipal.setSize(1000, 750);
+
             botaoBases = new JButton();
             botaoBases.addActionListener(this);
             JLabel labelTituloPrincipal = new JLabel();
             labelTituloPrincipal.setText("Sistema de Gerenciamento");
             labelTituloPrincipal.setBounds(0, 0, 300, 10);
+
+            botaoEditarCliente = new JButton();
+            botaoEditarCliente.addActionListener(this);
+            botaoEditarCliente.setBounds(100, 100, 200, 50);
+            botaoEditarCliente.setText("Editar cliente");
+            menuPrincipal.add(botaoEditarCliente);
 
             JPanel painelUm = new JPanel();
             painelUm.setBackground(Color.BLUE);
@@ -36,9 +46,6 @@ public class Gui implements ActionListener{
             painelDois.setBounds(0,100, 500, 200);
             painelDois.setLayout(null);
             painelDois.add(labelTituloPrincipal);
-            /*ImageIcon image = new ImageIcon(getClass().getResource("coisa.png"));
-            JLabel jLabel = new JLabel(image);
-            getContentPane().add(jLabel, BorderLayout.CENTER);*/
             menuPrincipal.setLayout(null);
             menuPrincipal.add(painelUm);
             menuPrincipal.add(painelDois);
@@ -48,15 +55,31 @@ public class Gui implements ActionListener{
 
         public void actionPerformed(ActionEvent e)
         {
-            if (e.getSource()==botaoBases && paginaDoisAbrir == 0)
+            if (e.getSource()==botaoBases)
             {
-                paginaDoisAbrir = 1;
-                PaginaDois pagina = new PaginaDois(this);
+                if (paginaDoisAbrir == 0)
+                {
+                    paginaDoisAbrir = 1;
+                    PaginaDois pagina = new PaginaDois(this);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(menuPrincipal, "Cadastro de clientes já está aberto",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            else
+            if (e.getSource()==botaoEditarCliente)
             {
-                JOptionPane.showMessageDialog(menuPrincipal, "Cadastro de clientes já está aberto",
-                        "Erro", JOptionPane.ERROR_MESSAGE);
+                if (menuClientesAbrir == 0)
+                {
+                    menuClientesAbrir = 1;
+                    MenuClientes pagina = new MenuClientes(this);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(menuPrincipal, "Menu de editar clientes já está aberto",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
 
@@ -64,5 +87,7 @@ public class Gui implements ActionListener{
         {
             this.paginaDoisAbrir = valor;
         }
+        public void updateMenuClientesAbrir (int valor) { this.menuClientesAbrir = valor; }
+
 
 }
