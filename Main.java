@@ -1,8 +1,5 @@
 package isso;
 
-import isso.DatabaseFuncoes;
-import isso.Gui;
-
 import java.sql.Connection;
 import java.util.Scanner;
 
@@ -12,9 +9,9 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Gui gui = new Gui();
+        MenuPrincipal menuPrincipal = new MenuPrincipal();
         Scanner scanner = new Scanner(System.in);
-        DatabaseFuncoes novaDatabase = new DatabaseFuncoes();
+        DatabaseMetodos novaDatabase = new DatabaseMetodos();
         Connection conexao = null;
         conexao = novaDatabase.conectaDb("paradigmas_database", "postgres", "admin");
         novaDatabase.createTableCliente(conexao);
