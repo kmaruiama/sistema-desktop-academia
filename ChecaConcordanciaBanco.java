@@ -24,7 +24,7 @@ public class ChecaConcordanciaBanco
         DatabaseMetodos checaLocal = new DatabaseMetodos();
         Connection conexao = null;
         conexao = checaLocal.conectaDb("paradigmas_database", "postgres", "admin");
-        if (checaLocal.checaExistencia(conexao, coluna, stringVerificada))
+        if (checaLocal.checaExistencia(conexao, coluna, stringVerificada) > 0)
         {
             return true;
         }

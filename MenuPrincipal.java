@@ -58,6 +58,7 @@ public class MenuPrincipal implements ActionListener{
             {
                 if (insereClienteAbrir == 0)
                 {
+                    LimitadorAbas pagina = new LimitadorAbas (this, null, null);
                     insereClienteAbrir = 1;
                 }
                 else
@@ -70,8 +71,9 @@ public class MenuPrincipal implements ActionListener{
             {
                 if (menuClientesAbrir == 0)
                 {
+                    MenuClientes menuClientes = new MenuClientes(this);
                     menuClientesAbrir = 1;
-                    MenuClientes pagina = new MenuClientes(this);
+
                 }
                 else
                 {

@@ -28,12 +28,18 @@ public class InsereCliente implements ActionListener {
 
 
     JFrame frameCliente = new JFrame();
-    MenuPrincipal menuPrincipal;
+    LimitadorAbas limitadorAbas;
+    DatabaseMetodos databaseMetodos;
 
+    Connection conexao;
 
-    InsereCliente(MenuPrincipal menuPrincipal, String nomeEditar)
+    InsereCliente(LimitadorAbas limitadorAbas, String nomeEditar)
     {
-        this.menuPrincipal = menuPrincipal;
+        this.limitadorAbas = limitadorAbas;
+
+        databaseMetodos = new DatabaseMetodos();
+        conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+
         frameCliente.setSize(500, 600);
         frameCliente.setTitle("Adicionar cliente");
         frameCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -129,6 +135,33 @@ public class InsereCliente implements ActionListener {
         inserirTudo.setBackground(new Color(0x93DC5C));
         inserirTudo.setText("INSERIR CLIENTE");
 
+        // modificação no caso de editar cliente
+        if (nomeEditar != null)
+        {
+            if(databaseMetodos.checaExistencia(conexao, "nome", nomeEditar) > 0)
+            {
+                JOptionPane.showConfirmDialog(frameCliente, "Duas pessoas possuem esse nome, escolha o CPF",
+                                         "Atenção", JOptionPane.OK_OPTION);
+                String[] listaCpfs = databaseMetodos.retornaCpfPorNome(conexao, nomeEditar);
+
+                JFrame listaCpfsFrame = new JFrame();
+                listaCpfsFrame.setSize(435, 300);
+                listaCpfsFrame.setTitle("Adicionar cliente");
+                listaCpfsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                listaCpfsFrame.setLayout(null);
+                listaCpfsFrame.setResizable(false);
+                
+                JList cpfLista = new JList(listaCpfs);
+                cpfLista.setFont(new Font("Arial", Font.PLAIN, 15));
+
+                JScrollPane cpfListaScroll = new JScrollPane(cpfLista);
+                cpfListaScroll.setBounds(10, 30, 400, 150);
+
+                listaCpfsFrame.add(cpfListaScroll);
+                listaCpfsFrame.setVisible(true);
+            }
+        }
+
 
 
         frameCliente.add(nomeTitulo);
@@ -150,7 +183,10 @@ public class InsereCliente implements ActionListener {
         frameCliente.add(planoPremium);
         frameCliente.add(inserirTudo);
 
-        frameCliente.setVisible(true);
+        if (nomeEditar == null)
+        {
+            frameCliente.setVisible(true);
+        }
 
         frameCliente.addWindowListener(new WindowListener()
         {
@@ -159,7 +195,7 @@ public class InsereCliente implements ActionListener {
             }
             @Override
             public void windowClosing(WindowEvent e) {
-                menuPrincipal.updateInsereClienteAbrir(0);
+                limitadorAbas.setLimitador(0);
             }
             @Override
             public void windowClosed(WindowEvent e) {
@@ -301,12 +337,9 @@ public class InsereCliente implements ActionListener {
             }
             if (fechaDez == 10)
             {
-                DatabaseMetodos insereLocal = new DatabaseMetodos();
-                Connection conexao = null;
-                conexao = insereLocal.conectaDb("paradigmas_database", "postgres", "admin");
-                insereLocal.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
+                databaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
                                              dataCartaoPrep, plano);
-                JOptionPane.showMessageDialog(frameCliente, "Cliente inserido com sucesso!", "Sucesso",
+                JOptionPane.showMessageDialog(frameCliente, "Cliente inserido/editado com sucesso!", "Sucesso",
                                              JOptionPane.INFORMATION_MESSAGE);
             }
         }

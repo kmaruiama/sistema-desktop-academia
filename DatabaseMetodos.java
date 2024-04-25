@@ -1,6 +1,8 @@
 package isso;
 
+import javax.naming.spi.ResolveResult;
 import java.sql.*;
+import java.util.*;
 
 public class DatabaseMetodos {
     public Connection conectaDb(String nomeDatabase, String user, String password) {
@@ -205,23 +207,21 @@ public class DatabaseMetodos {
         return idReturn;
     }
 
-    public boolean checaExistencia(Connection conexao, String campo, String nome) {
-        boolean existe = false;
+    public int checaExistencia(Connection conexao, String campo, String nome) {
+        int stringQuantidade = 0;
         Statement statement = null;
         ResultSet resultSet = null;
         try {
-            String query = String.format("SELECT EXISTS (SELECT 1 FROM clientes " +
-                    "WHERE %s = '%s') " +
-                    "AS row_exists", campo, nome);
+            String query = String.format("SELECT COUNT(*) FROM clientes WHERE %s = '%s'", campo, nome);
             statement = conexao.createStatement();
             resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                existe = resultSet.getBoolean("row_exists");
+                stringQuantidade = resultSet.getInt(1);
             }
         } catch (SQLException e) {
             System.out.println("no método checaExistencia: " + e);
         }
-        return existe;
+        return stringQuantidade;
     }
 
     public String[] resgataNomesDatabase(Connection conexao) {
@@ -254,4 +254,26 @@ public class DatabaseMetodos {
         }
         return lista;
     }
+
+    public String[] retornaCpfPorNome (Connection conexao, String nome)
+    {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        List<String> cpfs = new ArrayList<>();
+        try
+        {
+            String query = String.format("SELECT cpf FROM clientes WHERE nome ILIKE '%s'", nome);
+            statement = conexao.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next())
+            {
+                String cpf = resultSet.getString("cpf");
+                cpfs.add(cpf);
+            }
+        } catch (SQLException e) {
+            System.out.println("no método retornaCpfPorNome: " + e);
+        }
+        return cpfs.toArray(new String[0]);
+    }
 }
+

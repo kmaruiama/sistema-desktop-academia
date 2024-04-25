@@ -10,25 +10,25 @@ import java.sql.Connection;
 
 public class MenuClientes
 {
-    MenuPrincipal menuPrincipal;
     JFrame menuCliente = new JFrame();
     String nomeSelecionado;
     String[] nomesDatabase;
     JList listaNomes;
 
-    DatabaseMetodos databaseFuncoes = new DatabaseMetodos();
-    Connection conexao = databaseFuncoes.conectaDb("paradigmas_database", "postgres", "admin");
+    int insereClienteAbrir = 0;
+
+    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
+    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
     JScrollPane listaNomesScroll;
     MenuClientes (MenuPrincipal menuPrincipal)
     {
-        this.menuPrincipal = menuPrincipal;
 
         JLabel selecionarCliente = new JLabel();
         selecionarCliente.setText("Selecione o cliente");
         selecionarCliente.setFont(new Font("Arial", Font.PLAIN, 15));
         selecionarCliente.setBounds(10, 10, 300, 20);
 
-        nomesDatabase = databaseFuncoes.resgataNomesDatabase(conexao);
+        nomesDatabase = databaseMetodos.resgataNomesDatabase(conexao);
         listaNomes = new JList(nomesDatabase);
         listaNomes.setFont(new Font("Arial", Font.PLAIN, 15));
 
@@ -39,11 +39,19 @@ public class MenuClientes
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 nomeSelecionado = (String) listaNomes.getSelectedValue();
-                databaseFuncoes.printaClientes(conexao, nomeSelecionado);
+                if (insereClienteAbrir == 0)
+                {
+                    insereClienteAbrir = 1;
+                    LimitadorAbas pagina = new LimitadorAbas(null, MenuClientes.this, nomeSelecionado);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(menuCliente, "Cadastro de clientes já está aberto",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
-        InsereCliente editarCliente = new InsereCliente(new MenuPrincipal(), nomeSelecionado);
         menuCliente.setSize(435, 300);
         menuCliente.setTitle("Adicionar cliente");
         menuCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -82,9 +90,13 @@ public class MenuClientes
 
         setupActionListeners();
     }
-    
+
     private void setupActionListeners ()
     {
-    
     }
+    public void updateInsereClienteAbrir (int valor)
+    {
+        this.insereClienteAbrir = valor;
+    }
+
 }
