@@ -1,6 +1,5 @@
 package isso;
 
-import javax.naming.spi.ResolveResult;
 import java.sql.*;
 import java.util.*;
 
@@ -94,50 +93,71 @@ public class DatabaseMetodos {
 
     public void createRowClientes(Connection conexao, String nome, String cpf, String dataNascimento,
                                   String dataMatricula, String numeroCartao, String cvvCartao, String
-                                          dataCartao, int opcaoPlano) {
+                                          dataCartao, int opcaoPlano, int funcaoEditarCriar, String cpfReferencia) {
         Statement statement = null;
         try {
-            String query = String.format(
-                    "insert into " +
-                            "clientes (nome, data_nascimento, cpf, data_matricula, numero_cartao, cvv, data_cartao, plano) " +
-                            "values ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d);", nome, dataNascimento, cpf, dataMatricula,
-                    numeroCartao, cvvCartao, dataCartao, opcaoPlano);
-            statement = conexao.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("cliente " + nome + " inserido");
-
+            if (funcaoEditarCriar == 0)
+            {
+                String query = String.format(
+                        "insert into " +
+                                "clientes (nome, data_nascimento, cpf, data_matricula, numero_cartao, cvv, data_cartao, plano) " +
+                                "values ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d);", nome, dataNascimento, cpf, dataMatricula,
+                        numeroCartao, cvvCartao, dataCartao, opcaoPlano);
+                statement = conexao.createStatement();
+                statement.executeUpdate(query);
+                System.out.println("cliente " + nome + " inserido");
+            }
+            else
+            {
+                String query = String.format("UPDATE clientes SET nome = '%s', cpf = '%s', data_nascimento = '%s'," +
+                                                     " numero_cartao = '%s', cvv = '%s', data_cartao = '%s', data_matricula =" +
+                                                     " '%s', plano = %d WHERE cpf = '%s'", nome, cpf, dataNascimento, numeroCartao,
+                                                     cvvCartao, dataCartao, dataMatricula, opcaoPlano, cpfReferencia);
+                statement = conexao.createStatement();
+                statement.executeUpdate(query);
+            }
         } catch (SQLException e) {
             System.out.println("no método createRowClientes: " + e);
         }
     }
 
-    public void printaClientes(Connection conexao, String cpfNumero) {
+    public List<Object[]> printaClientes(Connection conexao, String cpfNumero) {
         ResultSet resultSet = null;
         Statement statement = null;
-        String nome = null;
-        String cpf = null;
-        String dataNascimento = null;
+        List<Object[]> resultadoColunas = new ArrayList<>();
+        Object [] returnResultadoColunas = null;
         try {
-            String query = String.format(
-                    "SELECT * " +
-                            "FROM clientes " +
-                            "WHERE nome ILIKE '%s';", cpfNumero);
+            String query = String.format("SELECT * FROM clientes " +
+                                         "WHERE cpf ILIKE '%s'", cpfNumero);
             statement = conexao.createStatement();
             resultSet = statement.executeQuery(query);
-            System.out.println("Achei seu cliente");
-            if (resultSet.next()) {
-                nome = resultSet.getString("nome");
-                cpf = resultSet.getString("cpf");
-                dataNascimento = resultSet.getString("data_nascimento");
-            } else {
-                System.out.println("Cliente não encontrado.");
+
+            while (resultSet.next()) {
+                int clientid = resultSet.getInt("clientid");
+                String nome = resultSet.getString("nome");
+                String data_nascimento = resultSet.getString("data_nascimento");
+                String cpfResult = resultSet.getString("cpf");
+                String numero_cartao = resultSet.getString("numero_cartao");
+                String cvv = resultSet.getString("cvv");
+                String data_cartao = resultSet.getString("data_cartao");
+                String data_matricula = resultSet.getString("data_matricula");
+                int plano = resultSet.getInt("plano");
+                Object[] resultado = {clientid, nome, data_nascimento, cpfResult, numero_cartao, cvv, data_cartao, data_matricula, plano};
+                resultadoColunas.add(resultado);
             }
+
         } catch (SQLException e) {
             System.out.println("no método printaClientes: " + e);
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                System.out.println("No bloco finally do método printaClientes" + e);
+            }
         }
-        System.out.println(nome + " " + dataNascimento + " " + cpf);
-
-    }
+        return resultadoColunas;
+}
 
     public void createRowTreino(Connection conexao, String query) {
         Statement statement = null;
@@ -275,5 +295,21 @@ public class DatabaseMetodos {
         }
         return cpfs.toArray(new String[0]);
     }
+
+    public void deletaCliente (Connection conexao, String nome)
+    {
+        Statement statement = null;
+        try
+        {
+           String query = String.format("DELETE FROM clientes where cpf = '%s'", nome);
+           statement = conexao.createStatement();
+           statement.executeUpdate(query);
+        } catch (SQLException e) {
+            System.out.println("no método retornaCpfPorNome: " + e);
+        }
+    }
+
+
+
 }
 

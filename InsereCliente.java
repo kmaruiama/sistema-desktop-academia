@@ -1,11 +1,13 @@
 package isso;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
+import java.util.List;
 
 public class InsereCliente implements ActionListener {
 
@@ -13,29 +15,24 @@ public class InsereCliente implements ActionListener {
     JButton planoSimples;
     JButton planoGold;
     JButton planoPremium;
-
     JButton inserirTudo;
-
     JTextField nomeInserir;
     JTextField cpfInserir;
     JTextField dataInserir;
-    
     JTextField dataMatriculaInserir;
-    
     JTextField cartaoInserir;
     JTextField cvvInserir;
     JTextField dataCartaoInserir;
-
-
+    String alvoEdicao;
+    String nomeEditar;
     JFrame frameCliente = new JFrame();
     LimitadorAbas limitadorAbas;
     DatabaseMetodos databaseMetodos;
-
     Connection conexao;
 
-    InsereCliente(LimitadorAbas limitadorAbas, String nomeEditar)
-    {
+    InsereCliente(LimitadorAbas limitadorAbas, String nomeEditar) {
         this.limitadorAbas = limitadorAbas;
+        this.nomeEditar = nomeEditar;
 
         databaseMetodos = new DatabaseMetodos();
         conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
@@ -77,7 +74,6 @@ public class InsereCliente implements ActionListener {
         dataInserir.setEditable(true);
 
 
-
         JLabel dataMatriculaTitulo = new JLabel();
         dataMatriculaTitulo.setText("Digite a data de inicio do plano do cliente");
         dataMatriculaTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -117,7 +113,7 @@ public class InsereCliente implements ActionListener {
         cvvInserir.setFont(new Font("Arial", Font.PLAIN, 15));
         cvvInserir.setBounds(20, 450, 60, 40);
         cvvInserir.setEditable(true);
-        
+
         planoSimples = new JButton();
         planoSimples.setBounds(325, 100, 120, 30);
         planoSimples.setText("Simples");
@@ -134,35 +130,6 @@ public class InsereCliente implements ActionListener {
         inserirTudo.setBounds(280, 495, 200, 60);
         inserirTudo.setBackground(new Color(0x93DC5C));
         inserirTudo.setText("INSERIR CLIENTE");
-
-        // modificação no caso de editar cliente
-        if (nomeEditar != null)
-        {
-            if(databaseMetodos.checaExistencia(conexao, "nome", nomeEditar) > 0)
-            {
-                JOptionPane.showConfirmDialog(frameCliente, "Duas pessoas possuem esse nome, escolha o CPF",
-                                         "Atenção", JOptionPane.OK_OPTION);
-                String[] listaCpfs = databaseMetodos.retornaCpfPorNome(conexao, nomeEditar);
-
-                JFrame listaCpfsFrame = new JFrame();
-                listaCpfsFrame.setSize(435, 300);
-                listaCpfsFrame.setTitle("Adicionar cliente");
-                listaCpfsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                listaCpfsFrame.setLayout(null);
-                listaCpfsFrame.setResizable(false);
-                
-                JList cpfLista = new JList(listaCpfs);
-                cpfLista.setFont(new Font("Arial", Font.PLAIN, 15));
-
-                JScrollPane cpfListaScroll = new JScrollPane(cpfLista);
-                cpfListaScroll.setBounds(10, 30, 400, 150);
-
-                listaCpfsFrame.add(cpfListaScroll);
-                listaCpfsFrame.setVisible(true);
-            }
-        }
-
-
 
         frameCliente.add(nomeTitulo);
         frameCliente.add(nomeInserir);
@@ -183,6 +150,12 @@ public class InsereCliente implements ActionListener {
         frameCliente.add(planoPremium);
         frameCliente.add(inserirTudo);
 
+        // modificação no caso de editar cliente
+        if (nomeEditar != null)
+        {
+            mostraEditarCliente();
+        }
+
         if (nomeEditar == null)
         {
             frameCliente.setVisible(true);
@@ -193,22 +166,32 @@ public class InsereCliente implements ActionListener {
             @Override
             public void windowOpened(WindowEvent e) {
             }
+
             @Override
             public void windowClosing(WindowEvent e) {
                 limitadorAbas.setLimitador(0);
+                if (nomeEditar != null)
+                {
+                    limitadorAbas.atualizaLista();
+                }
             }
+
             @Override
             public void windowClosed(WindowEvent e) {
             }
+
             @Override
             public void windowIconified(WindowEvent e) {
             }
+
             @Override
             public void windowDeiconified(WindowEvent e) {
             }
+
             @Override
             public void windowActivated(WindowEvent e) {
             }
+
             @Override
             public void windowDeactivated(WindowEvent e) {
             }
@@ -232,29 +215,30 @@ public class InsereCliente implements ActionListener {
         dataCartaoInserir.addActionListener(this);
     }
 
-    public void actionPerformed(ActionEvent e)
-    {
-        if (e.getSource()==planoSimples)
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == planoSimples)
         {
             plano = 1;
             planoSimples.setEnabled(false);
             planoGold.setEnabled(true);
             planoPremium.setEnabled(true);
         }
-        if (e.getSource() == planoGold) {
+        if (e.getSource() == planoGold)
+        {
             plano = 2;
             planoGold.setEnabled(false);
             planoSimples.setEnabled(true);
             planoPremium.setEnabled(true);
         }
-        if (e.getSource() == planoPremium) {
+        if (e.getSource() == planoPremium)
+        {
             plano = 2;
             planoPremium.setEnabled(false);
             planoSimples.setEnabled(true);
             planoGold.setEnabled(true);
         }
-        if (e.getSource() == inserirTudo)
-        {
+
+        if (e.getSource() == inserirTudo) {
             // prep = preprocessado
             boolean testaTudo;
             int fechaDez = 0;
@@ -304,44 +288,82 @@ public class InsereCliente implements ActionListener {
             {
                 fechaDez++;
             }
-            
             if (plano == 0)
             {
                 JOptionPane.showMessageDialog(frameCliente, "Não esqueça de selecionar qual plano você quer");
-            }
-            else
-            {
+            } else {
                 fechaDez++;
             }
-            if (verificadorInputBanco.checaBanco(nomePrep, 0))
+            if (verificadorInputBanco.checaBanco(nomePrep, 0) && nomeEditar == null)
             {
                 int escolha = JOptionPane.showConfirmDialog(frameCliente, "Esse nome já consta no banco de dados, deseja continuar mesmo assim?",
-                                                       "Atenção", JOptionPane.YES_NO_OPTION);
-                if (escolha == JOptionPane.YES_OPTION) 
+                                                      "Atenção", JOptionPane.YES_NO_OPTION);
+                if (escolha == JOptionPane.YES_OPTION)
                 {
                     fechaDez++;
                 }
-            }
-            else
-            {
+            } else {
                 fechaDez++;
             }
-            if (verificadorInputBanco.checaBanco(cpfPrep, 1))
-            {
+            if (verificadorInputBanco.checaBanco(cpfPrep, 1) && nomeEditar == null) {
                 JOptionPane.showMessageDialog(frameCliente, "Esse CPF já consta no banco de dados",
-                        "Erro", JOptionPane.ERROR_MESSAGE);
-            }
-            else
-            {
+                                         "Erro", JOptionPane.ERROR_MESSAGE);
+            } else {
                 fechaDez++;
             }
             if (fechaDez == 10)
             {
-                databaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
-                                             dataCartaoPrep, plano);
-                JOptionPane.showMessageDialog(frameCliente, "Cliente inserido/editado com sucesso!", "Sucesso",
-                                             JOptionPane.INFORMATION_MESSAGE);
+                if (nomeEditar == null)
+                {
+                    databaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
+                                                      dataCartaoPrep, plano, 0, null);
+                    JOptionPane.showMessageDialog(frameCliente, "Cliente inserido com sucesso!",
+                                             "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                }
+                else
+                {
+                    databaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
+                                                      dataCartaoPrep, plano, 1, alvoEdicao);
+                    JOptionPane.showMessageDialog(frameCliente, "Cliente editado com sucesso!",
+                                             "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
+    }
+
+    private void mostraEditarCliente()
+    {
+        List<Object[]> infoResgatada = databaseMetodos.printaClientes(conexao, nomeEditar);
+        for (Object[] resultado : infoResgatada) {
+            nomeInserir.setText((String) resultado[1]);
+            dataInserir.setText((String) resultado[2]);
+            cpfInserir.setText((String) resultado[3]);
+            alvoEdicao = (String) resultado[3];
+            cartaoInserir.setText((String) resultado[4]);
+            cvvInserir.setText((String) resultado[5]);
+            dataCartaoInserir.setText((String) resultado[6]);
+            dataMatriculaInserir.setText((String) resultado[7]);
+            int planoLocal = (int) resultado[8];
+            plano = planoLocal;
+            if (planoLocal == 1)
+            {
+                planoSimples.setEnabled(false);
+                planoGold.setEnabled(true);
+                planoPremium.setEnabled(true);
+            }
+            if (planoLocal == 2)
+            {
+                planoGold.setEnabled(false);
+                planoSimples.setEnabled(true);
+                planoPremium.setEnabled(true);
+            }
+            if (planoLocal == 3)
+            {
+                planoPremium.setEnabled(false);
+                planoSimples.setEnabled(true);
+                planoGold.setEnabled(true);
+            }
+        }
+        frameCliente.setVisible(true);
     }
 }

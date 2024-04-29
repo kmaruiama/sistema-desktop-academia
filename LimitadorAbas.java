@@ -23,6 +23,10 @@ public class LimitadorAbas
                 clientesLocal.updateInsereClienteAbrir(valor);
             }
         }
+        public void atualizaLista ()
+        {
+            clientesLocal.recarregaLista();
+        }
     }
 
 
