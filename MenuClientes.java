@@ -8,8 +8,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.Connection;
 
-public class MenuClientes
-{
+public class MenuClientes {
     int insereClienteAbrir = 0;
     JFrame menuCliente = new JFrame();
     String nomeSelecionado;
@@ -20,8 +19,8 @@ public class MenuClientes
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     LimitadorAbas limitadorAbas;
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
-    MenuClientes (MenuPrincipal menuPrincipal)
-    {
+
+    MenuClientes(MenuPrincipal menuPrincipal) {
         JLabel selecionarCliente = new JLabel();
         selecionarCliente.setText("Selecione o cliente");
         selecionarCliente.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -33,14 +32,13 @@ public class MenuClientes
 
         listaNomesScroll = new JScrollPane(listaNomes);
         listaNomesScroll.setBounds(10, 30, 400, 150);
-        listaNomes.addListSelectionListener(new ListSelectionListener()
-        {
+        listaNomes.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 nomeSelecionado = (String) listaNomes.getSelectedValue();
                 if (databaseMetodos.checaExistencia(conexao, "nome", nomeSelecionado) > 1) {
                     JOptionPane.showConfirmDialog(menuCliente, "Duas pessoas possuem esse nome, escolha o CPF",
-                             "Atenção", JOptionPane.PLAIN_MESSAGE);
+                            "Atenção", JOptionPane.PLAIN_MESSAGE);
                     String[] listaCpfs = databaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
 
                     JFrame listaCpfsFrame = new JFrame();
@@ -75,23 +73,18 @@ public class MenuClientes
                             }
                         }
                     });
-                } else
-                {
+                } else {
                     String[] listaCpfIndividual = databaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
-                    if (listaCpfIndividual.length>0)
-                    {
+                    if (listaCpfIndividual.length > 0) {
                         nomeValidado = listaCpfIndividual[0];
                     }
-                    if (nomeValidado != null)
-                    {
+                    if (nomeValidado != null) {
                         String[] options = {"EDITAR", "DELETAR"};
                         int escolhaEditarDeletar = JOptionPane.showOptionDialog(menuCliente, "Escolha",
                                 null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                         if (escolhaEditarDeletar == 0) {
                             limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
-                        }
-                        else if (escolhaEditarDeletar == 1)
-                        {
+                        } else if (escolhaEditarDeletar == 1) {
                             databaseMetodos.deletaCliente(conexao, nomeValidado);
                             recarregaLista();
                         }

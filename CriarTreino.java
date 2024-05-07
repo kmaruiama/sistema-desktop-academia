@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 
 
@@ -48,13 +50,18 @@ public class CriarTreino implements ActionListener {
     boolean abdominalPressionado;
     boolean desenvolvimentoPressionado;
 
-    CriarTreino()
-    {
+    boolean editarTreino = false;
+
+    MenuPrincipal menuPrincipal;
+
+    CriarTreino(MenuPrincipal menuPrincipal) {
+        this.menuPrincipal = menuPrincipal;
+
         criarTreino.setTitle("Criar treino");
         criarTreino.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         criarTreino.setResizable(true);
         criarTreino.setLayout(null);
-        criarTreino.setSize(700,700);
+        criarTreino.setSize(530, 600);
 
         exercicioTitulo = new JLabel();
         exercicioTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -70,7 +77,7 @@ public class CriarTreino implements ActionListener {
 
         cadeiraAdutora = new JButton();
         cadeiraAdutora.addActionListener(this);
-        cadeiraAdutora.setBounds(25,110,200,50);
+        cadeiraAdutora.setBounds(25, 110, 200, 50);
         cadeiraAdutora.setText("Cadeira Adutora");
         criarTreino.add(cadeiraAdutora);
 
@@ -105,7 +112,7 @@ public class CriarTreino implements ActionListener {
         criarTreino.add(reiniciarBotoes);
 
         avisoInsercao = new JButton();
-        avisoInsercao.setBounds(230, 500, 100, 50);
+        avisoInsercao.setBounds(295, 490, 100, 50);
         avisoInsercao.addActionListener(this);
         avisoInsercao.setText("Aviso");
         avisoInsercao.setBackground(new Color(0xffff37));
@@ -113,7 +120,7 @@ public class CriarTreino implements ActionListener {
 
         seriesTitulo = new JLabel();
         seriesTitulo.setFont(new Font("Arial", Font.PLAIN, 15));
-        seriesTitulo.setBounds(252, 20, 200, 20);
+        seriesTitulo.setBounds(272, 20, 200, 20);
         seriesTitulo.setText("Séries");
         criarTreino.add(seriesTitulo);
 
@@ -215,167 +222,173 @@ public class CriarTreino implements ActionListener {
         criarTreino.add(criarTudo);
 
         criarTreino.setVisible(true);
+
+        criarTreino.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                menuPrincipal.updateCriarTreinoAbrir(0);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+
+            }
+        });
     }
 
-    public void actionPerformed(ActionEvent e)
-    {
-        if (e.getSource()==legPress)
-        {
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == legPress) {
             legPressionado = true;
             legPress.setEnabled(false);
         }
-        if (e.getSource()==cadeiraAdutora)
-        {
-             adutoraPressionado = true;
-             cadeiraAdutora.setEnabled(false);
+        if (e.getSource() == cadeiraAdutora) {
+            adutoraPressionado = true;
+            cadeiraAdutora.setEnabled(false);
         }
-        if (e.getSource()==supinoMaquina)
-        {
+        if (e.getSource() == supinoMaquina) {
             supinoPressionado = true;
             supinoMaquina.setEnabled(false);
         }
-        if (e.getSource()==crucifixoMaquina)
-        {
+        if (e.getSource() == crucifixoMaquina) {
             crucifixoPressionado = true;
             crucifixoMaquina.setEnabled(false);
         }
-        if (e.getSource()==abdominalMaquina)
-        {
+        if (e.getSource() == abdominalMaquina) {
             abdominalPressionado = true;
             abdominalMaquina.setEnabled(false);
         }
-        if (e.getSource()==desenvolvimentoMaquinaAberto)
-        {
+        if (e.getSource() == desenvolvimentoMaquinaAberto) {
             desenvolvimentoPressionado = true;
             desenvolvimentoMaquinaAberto.setEnabled(false);
         }
-        if (e.getSource() == reiniciarBotoes)
-        {
-            legPressionado = false;
-            adutoraPressionado = false;
-            supinoPressionado = false;
-            crucifixoPressionado = false;
-            abdominalPressionado = false;
-            desenvolvimentoPressionado = false;
-            legPress.setEnabled(true);
-            cadeiraAdutora.setEnabled(true);
-            supinoMaquina.setEnabled(true);
-            crucifixoMaquina.setEnabled(true);
-            abdominalMaquina.setEnabled(true);
-            desenvolvimentoMaquinaAberto.setEnabled(true);
-            legSeries.setText("");
-            legReps.setText("");
-            adutoraSeries.setText("");
-            adutoraReps.setText("");
-            supinoSeries.setText("");
-            crucifixoSeries.setText("");
-            crucifixoReps.setText("");
-            abdominalSeries.setText("");
-            abdominalReps.setText("");
-            desenvolvimentoSeries.setText("");
-            desenvolvimentoReps.setText("");
+        if (e.getSource() == avisoInsercao) {
+            JOptionPane.showMessageDialog(criarTreino, "Se você esqueceu de inserir valores/clicar no botao em seu treino apenas\n" +
+                    "preencha as informacoes e clique novamente no botao de criar, reiniciar nao é necessario");
         }
-        if (e.getSource() == criarTudo)
-        {
-            databaseMetodos.createTableTreino(conexao, inserirTitulo.getText());
-            if (legPressionado)
-            {
-                if (!(legSeries.getText().isEmpty() || legReps.getText().isEmpty())) {
-                    queryExercicios(1);
+        if (e.getSource() == reiniciarBotoes) {
+            limpaGUI();
+        }
+        if (e.getSource() == criarTudo) {
+            if (!databaseMetodos.checaTituloTreino(conexao, converteBackspace(inserirTitulo.getText())) || editarTreino) {
+                if (!editarTreino) {
+                    databaseMetodos.createTableTreino(conexao, converteBackspace(inserirTitulo.getText()));
                 }
-                else
-                {
-                    JOptionPane.showMessageDialog(criarTreino, "No Leg Press: séries ou repetições estão vazias");
-                }
+                if (legPressionado) {
+                    if (!(legSeries.getText().isEmpty() || legReps.getText().isEmpty())) {
+                        queryExercicios(1);
+                    } else {
+                        JOptionPane.showMessageDialog(criarTreino, "No Leg Press: séries ou repetições estão vazias");
+                    }
 
+                }
+                if (adutoraPressionado) {
+                    if (!(adutoraSeries.getText().isEmpty() || adutoraReps.getText().isEmpty())) {
+                        queryExercicios(5);
+                    } else {
+                        JOptionPane.showMessageDialog(criarTreino, "Na Cadeira Adutora: séries ou repetições estão vazias");
+                    }
+                }
+                if (supinoPressionado) {
+                    if (!(supinoSeries.getText().isEmpty() || supinoReps.getText().isEmpty())) {
+                        queryExercicios(20);
+                    } else {
+                        JOptionPane.showMessageDialog(criarTreino, "No Supino Máquina: séries ou repetições estão vazias");
+                    }
+                }
+                if (crucifixoPressionado) {
+                    if (!(crucifixoSeries.getText().isEmpty() || crucifixoReps.getText().isEmpty())) {
+                        queryExercicios(26);
+                    } else {
+                        JOptionPane.showMessageDialog(criarTreino, "No Crucifixo Máquina: séries ou repetições estão vazias");
+                    }
+                }
+                if (abdominalPressionado) {
+                    if (!(abdominalSeries.getText().isEmpty() || abdominalReps.getText().isEmpty())) {
+                        queryExercicios(40);
+                    } else {
+                        JOptionPane.showMessageDialog(criarTreino, "No Abdominal Máquina: séries ou repetições estão vazias");
+                    }
+                }
+                int opcao = JOptionPane.showConfirmDialog(null, "Treino criado, você quer editar algo?",
+                        "Confirmação", JOptionPane.YES_NO_OPTION);
+                if (opcao == 0) {
+                    editarTreino = true;
+                }
+                if (opcao == 1) {
+                    limpaGUI();
+                    JOptionPane.showMessageDialog(criarTreino, "Treino criado com sucesso!");
+                }
+            } else {
+                JOptionPane.showMessageDialog(criarTreino, "Um treino com esse nome já existe, por favor substitua-o",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
             }
-            if (adutoraPressionado)
-            {
-                if (!(adutoraSeries.getText().isEmpty() || adutoraReps.getText().isEmpty())) {
-                    queryExercicios(5);
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(criarTreino, "Na Cadeira Adutora: séries ou repetições estão vazias");
-                }
-            }
-            if (supinoPressionado)
-            {
-                if (!(supinoSeries.getText().isEmpty() || supinoReps.getText().isEmpty()))
-                {
-                    queryExercicios(20);
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(criarTreino, "No Supino Máquina: séries ou repetições estão vazias");
-                }
-            }
-            if (crucifixoPressionado)
-            {
-                if (!(crucifixoSeries.getText().isEmpty() || crucifixoReps.getText().isEmpty())) {
-                    queryExercicios(26);
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(criarTreino, "No Crucifixo Máquina: séries ou repetições estão vazias");
-                }
-            }
-            if (abdominalPressionado)
-            {
-                if (!(abdominalSeries.getText().isEmpty() || abdominalReps.getText().isEmpty()))
-                {
-                    queryExercicios(40);
-                }
-                else
-                {
-                    JOptionPane.showMessageDialog(criarTreino, "No Abdominal Máquina: séries ou repetições estão vazias");
-                }
-            }
-
         }
     }
 
-    public void queryExercicios(int i)
-    {
-        switch (i)
-        {
+    public void queryExercicios(int i) {
+        switch (i) {
             case 1:
-                queryTreino.append ("insert into " + inserirTitulo.getText() + " ");
+                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('01', ");
                 querySeriesReps(1);
                 legPressionado = false;
                 break;
 
             case 5:
-                queryTreino.append ("insert into " + inserirTitulo.getText() + " ");
+                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('05', ");
                 querySeriesReps(5);
                 adutoraPressionado = false;
                 break;
 
             case 20:
-                queryTreino.append ("insert into " + inserirTitulo.getText() + " ");
+                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('20', ");
                 querySeriesReps(20);
                 supinoPressionado = false;
                 break;
 
             case 26:
-                queryTreino.append ("insert into " + inserirTitulo.getText() + " ");
+                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('26', ");
                 querySeriesReps(26);
                 crucifixoPressionado = false;
                 break;
 
             case 40:
-                queryTreino.append ("insert into " + inserirTitulo.getText() + " ");
+                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('40', ");
                 querySeriesReps(40);
                 abdominalPressionado = false;
                 break;
 
             case 50:
-                queryTreino.append ("insert into " + inserirTitulo.getText() + " ");
+                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('50', ");
                 querySeriesReps(50);
                 desenvolvimentoPressionado = false;
@@ -383,8 +396,7 @@ public class CriarTreino implements ActionListener {
         }
     }
 
-    public void querySeriesReps (int i)
-    {
+    public void querySeriesReps(int i) {
         String local;
         String queryFinal;
         switch (i) {
@@ -433,10 +445,45 @@ public class CriarTreino implements ActionListener {
         }
     }
 
-    private String converteBackSpace (String string)
-    {
-        
+    private String converteBackspace(String string) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (char espaco : string.toCharArray()) {
+            if (espaco == ' ') {
+                stringBuilder.append('_');
+            } else {
+                stringBuilder.append(espaco);
+            }
+        }
+        return stringBuilder.toString();
     }
 
+    private void limpaGUI() {
+        legPressionado = false;
+        adutoraPressionado = false;
+        supinoPressionado = false;
+        crucifixoPressionado = false;
+        abdominalPressionado = false;
+        desenvolvimentoPressionado = false;
+        legPress.setEnabled(true);
+        cadeiraAdutora.setEnabled(true);
+        supinoMaquina.setEnabled(true);
+        crucifixoMaquina.setEnabled(true);
+        abdominalMaquina.setEnabled(true);
+        desenvolvimentoMaquinaAberto.setEnabled(true);
+        legSeries.setText("");
+        legReps.setText("");
+        adutoraSeries.setText("");
+        adutoraReps.setText("");
+        supinoSeries.setText("");
+        supinoReps.setText("");
+        crucifixoSeries.setText("");
+        crucifixoReps.setText("");
+        abdominalSeries.setText("");
+        abdominalReps.setText("");
+        desenvolvimentoSeries.setText("");
+        desenvolvimentoReps.setText("");
+        inserirTitulo.setText("");
+        editarTreino = false;
+    }
 }
 

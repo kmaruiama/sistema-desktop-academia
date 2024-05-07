@@ -10,10 +10,15 @@ public class MenuPrincipal implements ActionListener
     JButton botaoInserirCliente;
     JButton botaoEditarCliente;
     JButton botaoCriarTreino;
+
+    JButton botaoEventoTreino;
     JFrame menuPrincipal = new JFrame();
-    /*Serve para evitar a abertura de multiplas janelas de cadastro*/
-    public int insereClienteAbrir = 0;
-    public int menuClientesAbrir = 0;
+
+    /*Serve para evitar a abertura de multiplas janelas*/
+    private int insereClienteAbrir = 0;
+    private int menuClientesAbrir = 0;
+    private int criarTreinoAbrir = 0;
+    private int eventoTreinoAbrir = 0;
 
         public MenuPrincipal() {
             menuPrincipal.setTitle("Sistema de Academia");
@@ -35,9 +40,15 @@ public class MenuPrincipal implements ActionListener
 
             botaoCriarTreino = new JButton();
             botaoCriarTreino.addActionListener(this);
-            botaoCriarTreino.setBounds(100, 190, 200, 50);
+            botaoCriarTreino.setBounds(310, 50, 200, 50);
             botaoCriarTreino.setText("Criar treino");
             menuPrincipal.add(botaoCriarTreino);
+
+            botaoEventoTreino = new JButton();
+            botaoEventoTreino.addActionListener(this);
+            botaoEventoTreino.setBounds(310, 120, 200, 50);
+            botaoEventoTreino.setText("Treinar cliente");
+            menuPrincipal.add(botaoEventoTreino);
 
             menuPrincipal.setLayout(null);
             menuPrincipal.setVisible(true);
@@ -47,7 +58,15 @@ public class MenuPrincipal implements ActionListener
         {
             if (e.getSource()==botaoCriarTreino)
             {
-                CriarTreino criarTreino = new CriarTreino();
+                if (criarTreinoAbrir == 0) {
+                    CriarTreino criarTreino = new CriarTreino(this);
+                    criarTreinoAbrir = 1;
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(menuPrincipal, "Criador de treinos já está aberto");
+                }
+
             }
             if (e.getSource()==botaoInserirCliente)
             {
@@ -76,13 +95,39 @@ public class MenuPrincipal implements ActionListener
                             "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            if (e.getSource()==botaoEventoTreino)
+            {
+                if (eventoTreinoAbrir == 0)
+                {
+                    EventoTreino eventoTreino = new EventoTreino(this);
+                    eventoTreinoAbrir = 1;
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(menuPrincipal, "Treino de clientes já está aberto",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
 
         public void updateInsereClienteAbrir (int valor)
         {
             this.insereClienteAbrir = valor;
         }
-        public void updateMenuClientesAbrir (int valor) { this.menuClientesAbrir = valor; }
+        public void updateMenuClientesAbrir (int valor)
+        {
+            this.menuClientesAbrir = valor;
+        }
+
+        public void updateCriarTreinoAbrir (int valor)
+        {
+            this.criarTreinoAbrir = valor;
+        }
+
+        public void updateEventoTreino (int valor)
+        {
+            this.eventoTreinoAbrir = valor;
+        }
 
 
 

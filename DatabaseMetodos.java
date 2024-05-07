@@ -1,5 +1,7 @@
 package isso;
 
+import javax.swing.plaf.nimbus.State;
+import java.net.ConnectException;
 import java.sql.*;
 import java.util.*;
 
@@ -96,8 +98,7 @@ public class DatabaseMetodos {
                                           dataCartao, int opcaoPlano, int funcaoEditarCriar, String cpfReferencia) {
         Statement statement = null;
         try {
-            if (funcaoEditarCriar == 0)
-            {
+            if (funcaoEditarCriar == 0) {
                 String query = String.format(
                         "insert into " +
                                 "clientes (nome, data_nascimento, cpf, data_matricula, numero_cartao, cvv, data_cartao, plano) " +
@@ -106,13 +107,11 @@ public class DatabaseMetodos {
                 statement = conexao.createStatement();
                 statement.executeUpdate(query);
                 System.out.println("cliente " + nome + " inserido");
-            }
-            else
-            {
+            } else {
                 String query = String.format("UPDATE clientes SET nome = '%s', cpf = '%s', data_nascimento = '%s'," +
-                                                     " numero_cartao = '%s', cvv = '%s', data_cartao = '%s', data_matricula =" +
-                                                     " '%s', plano = %d WHERE cpf = '%s'", nome, cpf, dataNascimento, numeroCartao,
-                                                     cvvCartao, dataCartao, dataMatricula, opcaoPlano, cpfReferencia);
+                                " numero_cartao = '%s', cvv = '%s', data_cartao = '%s', data_matricula =" +
+                                " '%s', plano = %d WHERE cpf = '%s'", nome, cpf, dataNascimento, numeroCartao,
+                        cvvCartao, dataCartao, dataMatricula, opcaoPlano, cpfReferencia);
                 statement = conexao.createStatement();
                 statement.executeUpdate(query);
             }
@@ -125,10 +124,10 @@ public class DatabaseMetodos {
         ResultSet resultSet = null;
         Statement statement = null;
         List<Object[]> resultadoColunas = new ArrayList<>();
-        Object [] returnResultadoColunas = null;
+        Object[] returnResultadoColunas = null;
         try {
             String query = String.format("SELECT * FROM clientes " +
-                                         "WHERE cpf ILIKE '%s'", cpfNumero);
+                    "WHERE cpf ILIKE '%s'", cpfNumero);
             statement = conexao.createStatement();
             resultSet = statement.executeQuery(query);
 
@@ -157,7 +156,7 @@ public class DatabaseMetodos {
             }
         }
         return resultadoColunas;
-}
+    }
 
     public void createRowTreino(Connection conexao, String query) {
         Statement statement = null;
@@ -275,18 +274,15 @@ public class DatabaseMetodos {
         return lista;
     }
 
-    public String[] retornaCpfPorNome (Connection conexao, String nome)
-    {
+    public String[] retornaCpfPorNome(Connection conexao, String nome) {
         Statement statement = null;
         ResultSet resultSet = null;
         List<String> cpfs = new ArrayList<>();
-        try
-        {
+        try {
             String query = String.format("SELECT cpf FROM clientes WHERE nome ILIKE '%s'", nome);
             statement = conexao.createStatement();
             resultSet = statement.executeQuery(query);
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 String cpf = resultSet.getString("cpf");
                 cpfs.add(cpf);
             }
@@ -296,20 +292,46 @@ public class DatabaseMetodos {
         return cpfs.toArray(new String[0]);
     }
 
-    public void deletaCliente (Connection conexao, String nome)
-    {
+    public void deletaCliente(Connection conexao, String nome) {
         Statement statement = null;
-        try
-        {
-           String query = String.format("DELETE FROM clientes where cpf = '%s'", nome);
-           statement = conexao.createStatement();
-           statement.executeUpdate(query);
+        try {
+            String query = String.format("DELETE FROM clientes where cpf = '%s'", nome);
+            statement = conexao.createStatement();
+            statement.executeUpdate(query);
         } catch (SQLException e) {
             System.out.println("no método retornaCpfPorNome: " + e);
         }
     }
 
-
-
+    public boolean checaTituloTreino(Connection conexao, String string) {
+        ResultSet resultSet = null;
+        Statement statement = null;
+        boolean tabelaExiste = false;
+        try {
+            String query = String.format("SELECT EXISTS (" +
+                    "SELECT 1 " +
+                    "FROM information_schema.tables " +
+                    "WHERE table_name = '%s')", string);
+            statement = conexao.createStatement();
+            resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                tabelaExiste = resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("No método checaTituloTreino: " + e);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("No bloco finally do método checaTituloTreino: " + e);
+            }
+        }
+        return tabelaExiste;
+    }
 }
 

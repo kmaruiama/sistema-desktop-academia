@@ -291,7 +291,9 @@ public class InsereCliente implements ActionListener {
             if (plano == 0)
             {
                 JOptionPane.showMessageDialog(frameCliente, "Não esqueça de selecionar qual plano você quer");
-            } else {
+            }
+            else
+            {
                 fechaDez++;
             }
             if (verificadorInputBanco.checaBanco(nomePrep, 0) && nomeEditar == null)
@@ -302,13 +304,17 @@ public class InsereCliente implements ActionListener {
                 {
                     fechaDez++;
                 }
-            } else {
+            }
+            else
+            {
                 fechaDez++;
             }
             if (verificadorInputBanco.checaBanco(cpfPrep, 1) && nomeEditar == null) {
                 JOptionPane.showMessageDialog(frameCliente, "Esse CPF já consta no banco de dados",
                                          "Erro", JOptionPane.ERROR_MESSAGE);
-            } else {
+            }
+            else
+            {
                 fechaDez++;
             }
             if (fechaDez == 10)
@@ -334,7 +340,8 @@ public class InsereCliente implements ActionListener {
     private void mostraEditarCliente()
     {
         List<Object[]> infoResgatada = databaseMetodos.printaClientes(conexao, nomeEditar);
-        for (Object[] resultado : infoResgatada) {
+        for (Object[] resultado : infoResgatada)
+        {
             nomeInserir.setText((String) resultado[1]);
             dataInserir.setText((String) resultado[2]);
             cpfInserir.setText((String) resultado[3]);
