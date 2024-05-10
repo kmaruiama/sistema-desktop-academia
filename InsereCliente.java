@@ -232,7 +232,7 @@ public class InsereCliente implements ActionListener {
         }
         if (e.getSource() == planoPremium)
         {
-            plano = 2;
+            plano = 3;
             planoPremium.setEnabled(false);
             planoSimples.setEnabled(true);
             planoGold.setEnabled(true);
@@ -339,7 +339,7 @@ public class InsereCliente implements ActionListener {
 
     private void mostraEditarCliente()
     {
-        List<Object[]> infoResgatada = databaseMetodos.printaClientes(conexao, nomeEditar);
+        List<Object[]> infoResgatada = databaseMetodos.retornaInfoClientes(conexao, nomeEditar);
         for (Object[] resultado : infoResgatada)
         {
             nomeInserir.setText((String) resultado[1]);

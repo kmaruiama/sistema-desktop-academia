@@ -14,7 +14,6 @@ public class CriarTreino implements ActionListener {
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
     StringBuilder queryTreino = new StringBuilder(200);
-    String queryQualTable;
     JLabel exercicioTitulo;
     JLabel seriesTitulo;
     JLabel repsTitulo;
@@ -340,6 +339,7 @@ public class CriarTreino implements ActionListener {
                     editarTreino = true;
                 }
                 if (opcao == 1) {
+                    databaseMetodos.createRowTreinoLista(conexao, converteBackspace(inserirTitulo.getText()));
                     limpaGUI();
                     JOptionPane.showMessageDialog(criarTreino, "Treino criado com sucesso!");
                 }

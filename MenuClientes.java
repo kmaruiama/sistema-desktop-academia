@@ -18,10 +18,17 @@ public class MenuClientes {
     JScrollPane listaNomesScroll;
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     LimitadorAbas limitadorAbas;
+
+    EventoTreino eventoTreino;
+
+    int escolha;
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
 
-    MenuClientes(MenuPrincipal menuPrincipal) {
+    /* escolha serve para usar tanto em InsereCliente quanto em EventoTreino*/
+    MenuClientes(MenuPrincipal menuPrincipal, EventoTreino eventoTreino, int escolha) {
         JLabel selecionarCliente = new JLabel();
+        this.escolha = escolha;
+        this.eventoTreino = eventoTreino;
         selecionarCliente.setText("Selecione o cliente");
         selecionarCliente.setFont(new Font("Arial", Font.PLAIN, 15));
         selecionarCliente.setBounds(10, 10, 300, 20);
@@ -59,7 +66,11 @@ public class MenuClientes {
                     cpfLista.addListSelectionListener(new ListSelectionListener() {
                         @Override
                         public void valueChanged(ListSelectionEvent e) {
-                            nomeValidado = (String) cpfLista.getSelectedValue();
+                            if (escolha == 1) {
+                                nomeValidado = (String) cpfLista.getSelectedValue();
+                                retornaNomeParaTreino(nomeValidado);
+                            }
+                            else {
                             String[] options = {"EDITAR", "DELETAR"};
                             if (nomeValidado != null) {
                                 int escolhaEditarDeletar = JOptionPane.showOptionDialog(menuCliente, "Escolha",
@@ -72,6 +83,7 @@ public class MenuClientes {
                                 }
                             }
                         }
+                        }
                     });
                 } else {
                     String[] listaCpfIndividual = databaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
@@ -79,14 +91,20 @@ public class MenuClientes {
                         nomeValidado = listaCpfIndividual[0];
                     }
                     if (nomeValidado != null) {
-                        String[] options = {"EDITAR", "DELETAR"};
-                        int escolhaEditarDeletar = JOptionPane.showOptionDialog(menuCliente, "Escolha",
-                                null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                        if (escolhaEditarDeletar == 0) {
-                            limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
-                        } else if (escolhaEditarDeletar == 1) {
-                            databaseMetodos.deletaCliente(conexao, nomeValidado);
-                            recarregaLista();
+                        if (escolha == 0) {
+                            String[] options = {"EDITAR", "DELETAR"};
+                            int escolhaEditarDeletar = JOptionPane.showOptionDialog(menuCliente, "Escolha",
+                                    null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                            if (escolhaEditarDeletar == 0) {
+                                limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
+                            } else if (escolhaEditarDeletar == 1) {
+                                databaseMetodos.deletaCliente(conexao, nomeValidado);
+                                recarregaLista();
+                            }
+                        }
+                        else
+                        {
+                            retornaNomeParaTreino(nomeValidado);
                         }
                     }
                 }
@@ -152,5 +170,11 @@ public class MenuClientes {
             model.addElement(nome);
         }
         listaNomes.setModel(model);
+    }
+
+    public void retornaNomeParaTreino (String string)
+    {
+        eventoTreino.nomeSelecionado = string;
+        menuCliente.dispose();
     }
 }

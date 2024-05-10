@@ -21,6 +21,7 @@ public class MenuPrincipal implements ActionListener
     private int eventoTreinoAbrir = 0;
 
         public MenuPrincipal() {
+
             menuPrincipal.setTitle("Sistema de Academia");
             menuPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             menuPrincipal.setResizable(false);
@@ -85,7 +86,7 @@ public class MenuPrincipal implements ActionListener
             {
                 if (menuClientesAbrir == 0)
                 {
-                    MenuClientes menuClientes = new MenuClientes(this);
+                    MenuClientes menuClientes = new MenuClientes(this, null,0);
                     menuClientesAbrir = 1;
 
                 }

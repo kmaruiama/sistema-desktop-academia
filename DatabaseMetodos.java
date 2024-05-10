@@ -62,7 +62,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public void createListaTreinos(Connection conexao) {
+    public void createListaTreino(Connection conexao) {
         Statement statement;
         try {
             String query =
@@ -120,7 +120,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public List<Object[]> printaClientes(Connection conexao, String cpfNumero) {
+    public List<Object[]> retornaInfoClientes(Connection conexao, String cpfNumero) {
         ResultSet resultSet = null;
         Statement statement = null;
         List<Object[]> resultadoColunas = new ArrayList<>();
@@ -201,29 +201,6 @@ public class DatabaseMetodos {
         } catch (SQLException e) {
             System.out.println("no método createRowLink: " + e);
         }
-    }
-
-    public String buscaIDPorNome(Connection conexao, String nome, String tableNome) {
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String id = tableNome.equals("clientes") ? "clientid" : "treinoid";
-        String coluna = tableNome.equals("clientes") ? "nome" : "nome_treino";
-        String idReturn = null;
-        try {
-            String query = String.format(
-                    "SELECT %s " +
-                            "FROM %s " +
-                            "WHERE %s ILIKE '%s';", id, tableNome, coluna, nome);
-            statement = conexao.createStatement();
-            resultSet = statement.executeQuery(query);
-            System.out.println("deu bom na conversao de nome pra id");
-            if (resultSet.next()) {
-                idReturn = resultSet.getString(id);
-            }
-        } catch (SQLException e) {
-            System.out.println("no método buscaIDPorNome: " + e);
-        }
-        return idReturn;
     }
 
     public int checaExistencia(Connection conexao, String campo, String nome) {
@@ -332,6 +309,37 @@ public class DatabaseMetodos {
             }
         }
         return tabelaExiste;
+    }
+
+    public String[] resgataTreinosDatabase(Connection conexao) {
+        String[] lista = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            String query = "SELECT nome_treino FROM lista_treinos";
+            statement = conexao.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            resultSet = statement.executeQuery();
+            resultSet.last();
+            int linhaCount = resultSet.getRow();
+            resultSet.beforeFirst();
+            lista = new String[linhaCount];
+            int index = 0;
+            while (resultSet.next()) {
+                String nome = resultSet.getString("nome_treino");
+                lista[index++] = nome;
+            }
+        } catch (SQLException e) {
+            System.out.println("no método resgataTreinosDatabase: " + e);
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                System.out.println("no bloco finally do método resgataTreinosDatabase: " + e);
+            }
+        }
+        return lista;
     }
 }
 
