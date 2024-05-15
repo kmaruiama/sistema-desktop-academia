@@ -1,5 +1,6 @@
 package isso;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.*;
 
@@ -9,9 +10,6 @@ public class DatabaseMetodos {
         try {
             Class.forName("org.postgresql.Driver");
             conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + nomeDatabase, user, password);
-            if (conexao != null) {
-                System.out.println("Tudo certo");
-            }
         } catch (Exception e) {
             System.out.println("no método conectaDb: " + e);
         }
@@ -36,7 +34,6 @@ public class DatabaseMetodos {
                             "PRIMARY KEY (clientid));";
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println("Tabela criada ou encontrada");
         } catch (SQLException e) {
             System.out.println("no método createTableCliente: " + e);
         }
@@ -54,7 +51,6 @@ public class DatabaseMetodos {
 
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println("Tabela criada ou encontrada");
         } catch (SQLException e) {
             System.out.println("no método createTableTreino:" + e);
         }
@@ -71,7 +67,6 @@ public class DatabaseMetodos {
 
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println("Tabela criada ou encontrada");
         } catch (SQLException e) {
             System.out.println("no método createListaTreinos: " + e);
         }
@@ -84,7 +79,6 @@ public class DatabaseMetodos {
                     "insert into lista_treinos (nome_treino) values ('%s');", nomeTreino);
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println("treino " + nomeTreino + " inserido na lista de treinos");
 
         } catch (SQLException e) {
             System.out.println("No método createRowTreinoLista" + e);
@@ -104,7 +98,6 @@ public class DatabaseMetodos {
                         numeroCartao, cvvCartao, dataCartao, opcaoPlano);
                 statement = conexao.createStatement();
                 statement.executeUpdate(query);
-                System.out.println("cliente " + nome + " inserido");
             } else {
                 String query = String.format("UPDATE clientes SET nome = '%s', cpf = '%s', data_nascimento = '%s'," +
                                 " numero_cartao = '%s', cvv = '%s', data_cartao = '%s', data_matricula =" +
@@ -161,41 +154,41 @@ public class DatabaseMetodos {
         try {
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println("treino novo inserido na db de treinos");
         } catch (SQLException e) {
             System.out.println("no método createRowTreino:" + e);
         }
     }
 
-    public void createLinkClienteTreino(Connection conexao) {
+    public void createEventoTable(Connection conexao) {
         Statement statement;
         try {
-            String query =
-                    "CREATE TABLE if NOT EXISTS lista_link (" +
-                            "linkid SERIAL PRIMARY KEY, " +
-                            "treinoid INT, " +
-                            "clientid INT, " +
-                            "dia_treinado DATE, " +
-                            "FOREIGN KEY (treinoid) REFERENCES lista_treinos(treinoid), " +
-                            "FOREIGN KEY (clientid) REFERENCES clientes(clientid));";
+            String query =  "CREATE TABLE IF NOT EXISTS lista_eventos (" +
+                            "id SERIAL PRIMARY KEY," +
+                            "treino_titulo VARCHAR(50)," +
+                            "nome VARCHAR(50)," +
+                            "exercicio INT," +
+                            "series INT," +
+                            "repeticoes INT," +
+                            "carga INT," +
+                            "data_treino DATE" +
+                            ");";
+
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println("Tabela criada ou encontrada");
         } catch (SQLException e) {
             System.out.println("no método createLinkClienteTreino :" + e);
         }
     }
 
-    public void createRowLink(Connection conexao, String nome, String treino, String data) {
+    public void insertEvento(Connection conexao, String treino_titulo, String nome, int exercicio,
+                             int series, int repeticoes, int carga, String data_treino) {
         Statement statement = null;
         try {
-            String query = String.format(
-                    "insert into lista_link" +
-                            " (treinoid, clientid, dia_treinado) " +
-                            "values ('%s', '%s', '%s');", treino, nome, data);
+            String query = String.format("INSERT INTO lista_eventos (treino_titulo, nome, exercicio," +
+                                         " series, repeticoes, carga, data_treino) VALUES ('%s', '%s', %d, %d, %d, %d, '%s')",
+                    treino_titulo, nome, exercicio, series, repeticoes, carga, data_treino);
             statement = conexao.createStatement();
             statement.executeUpdate(query);
-            System.out.println(nome + " com treino " + treino + " linkado");
         } catch (SQLException e) {
             System.out.println("no método createRowLink: " + e);
         }
@@ -391,6 +384,26 @@ public class DatabaseMetodos {
             System.out.println("No método retornaInfoExercicios: " + e);
         }
         return infoArray;
+    }
+
+    public boolean relatoriosSaoPossiveis(Connection connection) {
+        ResultSet resultSet = null;
+        try {
+            DatabaseMetaData dadosDb = connection.getMetaData();
+            resultSet = dadosDb.getTables(null, null, "lista_eventos", null);
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("No método relatorioSaoPossiveis: " + e);
+            return false;
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    System.out.println("No bloco finally do método relatorioSaoPossiveis: " + e);
+                }
+            }
+        }
     }
 }
 

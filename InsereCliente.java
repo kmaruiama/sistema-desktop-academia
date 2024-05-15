@@ -253,37 +253,37 @@ public class InsereCliente implements ActionListener {
             ChecaConcordanciaBanco verificadorInputBanco = new ChecaConcordanciaBanco();
 
             //solução chinelona mas eu nao sabia como automatizar essa checagem visto que sao multiplas strings
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, nomePrep, 1, 1);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, nomePrep, 1, 1, 0);
             if (testaTudo)
             {
                 fechaDez++;
             }
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, cpfPrep, 2, 0);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, cpfPrep, 2, 0, 0);
             if (testaTudo)
             {
                 fechaDez++;
             }
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, dataPrep, 3, 0);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, dataPrep, 3, 0, 0);
             if (testaTudo)
             {
                 fechaDez++;
             }
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, dataMatriculaPrep, 4, 0);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, dataMatriculaPrep, 4, 0, 0);
             if (testaTudo)
             {
                 fechaDez++;
             }
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, numeroCartaoPrep, 5, 0);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, numeroCartaoPrep, 5, 0, 0);
             if (testaTudo)
             {
                 fechaDez++;
             }
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, cvvPrep, 6, 0);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, cvvPrep, 6, 0, 0);
             if (testaTudo)
             {
                 fechaDez++;
             }
-            testaTudo = verificadorInput.checaConcordancia(frameCliente, cvvPrep, 7, 0);
+            testaTudo = verificadorInput.checaConcordancia(frameCliente, cvvPrep, 7, 0, 0);
             if (testaTudo)
             {
                 fechaDez++;

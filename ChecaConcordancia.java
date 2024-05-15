@@ -8,8 +8,7 @@ númericas e vice-versa
 */
 public class ChecaConcordancia {
 
-
-    public boolean checaConcordancia(JFrame frame, String stringVerificada, int campoErro, int operacao)
+    public boolean checaConcordancia(JFrame frame, String stringVerificada, int campoErro, int operacao, int sourceConsulta)
     {
         String campoErroString = null;
         switch (campoErro)
@@ -54,8 +53,20 @@ public class ChecaConcordancia {
         }
         if (stringVerificada.matches(".*[a-zA-Z].*") && operacao == 0)
         {
-            JOptionPane.showMessageDialog(frame, "Erro: o campo " + campoErroString + " campo possui letras");
+            if (sourceConsulta == 1 )
+            {
+                JOptionPane.showMessageDialog(frame, "Erro: o input possui letras");
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(frame, "Erro: o campo " + campoErroString + "  possui letras");
+            }
             return false; // erro, contem algum tipo de letra no numero
+        }
+        if (stringVerificada.matches(".*\\s.*") && sourceConsulta == 1)
+        {
+            JOptionPane.showMessageDialog(frame, "Erro: o input possui backspace");
+            return false;
         }
         return true; // sucesso
     }

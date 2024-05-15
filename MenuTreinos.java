@@ -8,7 +8,6 @@ import javax.swing.event.ListSelectionListener;
 public class MenuTreinos {
     EventoTreino eventoTreino;
 
-
     JList listaTreinos;
 
     JFrame listaTreinosFrame;

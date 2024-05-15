@@ -12,6 +12,8 @@ import java.sql.Connection;
 public class CriarTreino implements ActionListener {
 
     ConverteBackspaceClasse converteBackspaceClasse = new ConverteBackspaceClasse();
+
+    MantemIntegridadeTreinos mantemIntegridadeTreinos = new MantemIntegridadeTreinos();
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
     StringBuilder queryTreino = new StringBuilder(200);
@@ -50,6 +52,7 @@ public class CriarTreino implements ActionListener {
     boolean desenvolvimentoPressionado;
     boolean editarTreino = false;
     MenuPrincipal menuPrincipal;
+
     CriarTreino(MenuPrincipal menuPrincipal) {
         this.menuPrincipal = menuPrincipal;
 
@@ -223,22 +226,28 @@ public class CriarTreino implements ActionListener {
             @Override
             public void windowOpened(WindowEvent e) {
             }
+
             @Override
             public void windowClosing(WindowEvent e) {
                 menuPrincipal.updateCriarTreinoAbrir(0);
             }
+
             @Override
             public void windowClosed(WindowEvent e) {
             }
+
             @Override
             public void windowIconified(WindowEvent e) {
             }
+
             @Override
             public void windowDeiconified(WindowEvent e) {
             }
+
             @Override
             public void windowActivated(WindowEvent e) {
             }
+
             @Override
             public void windowDeactivated(WindowEvent e) {
             }
@@ -271,66 +280,98 @@ public class CriarTreino implements ActionListener {
             desenvolvimentoMaquinaAberto.setEnabled(false);
         }
         if (e.getSource() == avisoInsercao) {
-            JOptionPane.showMessageDialog(criarTreino, "Se você esqueceu de inserir valores/clicar no botao em seu treino apenas\n" + "preencha as informacoes e clique novamente no botao de criar, reiniciar nao é necessario");
+            JOptionPane.showMessageDialog(criarTreino, "Se você esqueceu de inserir valores/clicar no botao em seu treino apenas\n" +
+                    "preencha as informacoes e clique novamente no botao de criar, reiniciar nao é necessario");
         }
         if (e.getSource() == reiniciarBotoes) {
             limpaGUI();
         }
         if (e.getSource() == criarTudo) {
+            inputCompleto();
+        }
+    }
+
+    private void inputCompleto()
+    {
+        int booleansTotais = somaTotais();
+        int inputValido = 0;
+        if (!inserirTitulo.getText().isEmpty()) {
             if (!databaseMetodos.checaTituloTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText())) || editarTreino) {
-                if (!editarTreino) {
-                    databaseMetodos.createTableTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
-                }
+                databaseMetodos.createTableTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
                 if (legPressionado) {
-                    if (!(legSeries.getText().isEmpty() || legReps.getText().isEmpty())) {
+                    if (mantemIntegridadeTreinos.mantemIntegridade(legSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(legReps.getText())) {
                         queryExercicios(1);
+                        inputValido++;
                     } else {
-                        JOptionPane.showMessageDialog(criarTreino, "No Leg Press: séries ou repetições estão vazias");
+                        legSeries.setText("");
+                        legReps.setText("");
                     }
                 }
                 if (adutoraPressionado) {
-                    if (!(adutoraSeries.getText().isEmpty() || adutoraReps.getText().isEmpty())) {
+                    if (mantemIntegridadeTreinos.mantemIntegridade(adutoraSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(adutoraReps.getText())) {
                         queryExercicios(5);
+                        inputValido++;
                     } else {
-                        JOptionPane.showMessageDialog(criarTreino, "Na Cadeira Adutora: séries ou repetições estão vazias");
+                        adutoraSeries.setText("");
+                        adutoraReps.setText("");
                     }
                 }
                 if (supinoPressionado) {
-                    if (!(supinoSeries.getText().isEmpty() || supinoReps.getText().isEmpty())) {
+                    if (mantemIntegridadeTreinos.mantemIntegridade(supinoSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(supinoReps.getText())) {
                         queryExercicios(20);
+                        inputValido++;
                     } else {
-                        JOptionPane.showMessageDialog(criarTreino, "No Supino Máquina: séries ou repetições estão vazias");
+                        supinoSeries.setText("");
+                        supinoReps.setText("");
                     }
                 }
                 if (crucifixoPressionado) {
-                    if (!(crucifixoSeries.getText().isEmpty() || crucifixoReps.getText().isEmpty())) {
+                    if (mantemIntegridadeTreinos.mantemIntegridade(crucifixoSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(crucifixoReps.getText())) {
                         queryExercicios(26);
+                        inputValido++;
                     } else {
-                        JOptionPane.showMessageDialog(criarTreino, "No Crucifixo Máquina: séries ou repetições estão vazias");
+                        crucifixoSeries.setText("");
+                        crucifixoReps.setText("");
                     }
                 }
                 if (abdominalPressionado) {
-                    if (!(abdominalSeries.getText().isEmpty() || abdominalReps.getText().isEmpty())) {
+                    if (mantemIntegridadeTreinos.mantemIntegridade(abdominalSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(abdominalReps.getText())) {
                         queryExercicios(40);
+                        inputValido++;
                     } else {
-                        JOptionPane.showMessageDialog(criarTreino, "No Abdominal Máquina: séries ou repetições estão vazias");
+                        abdominalSeries.setText("");
+                        abdominalReps.setText("");
                     }
                 }
-                int opcao = JOptionPane.showConfirmDialog(null, "Treino criado, você quer editar algo?", "Confirmação", JOptionPane.YES_NO_OPTION);
-                if (opcao == 0) {
-                    editarTreino = true;
+                if (desenvolvimentoPressionado) {
+                    if (mantemIntegridadeTreinos.mantemIntegridade(desenvolvimentoSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(desenvolvimentoReps.getText())) {
+                        queryExercicios(50);
+                        inputValido++;
+                    } else {
+                        desenvolvimentoSeries.setText("");
+                        desenvolvimentoReps.setText("");
+                    }
                 }
-                if (opcao == 1) {
-                    databaseMetodos.createRowTreinoLista(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
-                    limpaGUI();
-                    JOptionPane.showMessageDialog(criarTreino, "Treino criado com sucesso!");
+                if (booleansTotais == inputValido) {
+                    int opcao = JOptionPane.showConfirmDialog(null, "Treino criado, você quer editar algo?", "Confirmação", JOptionPane.YES_NO_OPTION);
+                    if (opcao == 0) {
+                        editarTreino = true;
+                    }
+                    if (opcao == 1 && !inserirTitulo.getText().isEmpty()) {
+                        databaseMetodos.createRowTreinoLista(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
+                        limpaGUI();
+                        JOptionPane.showMessageDialog(criarTreino, "Treino criado com sucesso!");
+                    }
+                } else {
+                    editarTreino = true;
                 }
             } else {
                 JOptionPane.showMessageDialog(criarTreino, "Um treino com esse nome já existe, por favor substitua-o", "Erro", JOptionPane.ERROR_MESSAGE);
             }
+        } else {
+            JOptionPane.showMessageDialog(criarTreino, "Não esqueça do título do treino", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     private void queryExercicios(int i) {
         switch (i) {
             case 1:
@@ -453,6 +494,37 @@ public class CriarTreino implements ActionListener {
         desenvolvimentoReps.setText("");
         inserirTitulo.setText("");
         editarTreino = false;
+    }
+
+
+    private int somaTotais ()
+    {
+        int booleansTotais = 0;
+        if (legPressionado)
+        {
+            booleansTotais++;
+        }
+        if (adutoraPressionado)
+        {
+            booleansTotais++;
+        }
+        if (supinoPressionado)
+        {
+            booleansTotais++;
+        }
+        if (crucifixoPressionado)
+        {
+            booleansTotais++;
+        }
+        if (abdominalPressionado)
+        {
+            booleansTotais++;
+        }
+        if (desenvolvimentoPressionado)
+        {
+            booleansTotais++;
+        }
+        return booleansTotais;
     }
 }
 
