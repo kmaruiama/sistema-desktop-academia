@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 
 public class LimitadorAbas

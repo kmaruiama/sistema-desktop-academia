@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 import javax.swing.*;
 

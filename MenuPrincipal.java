@@ -1,7 +1,6 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -21,6 +20,7 @@ public class MenuPrincipal implements ActionListener {
     private int menuClientesAbrir = 0;
     private int criarTreinoAbrir = 0;
     private int eventoTreinoAbrir = 0;
+    private int relatoriosAbrir = 0;
 
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
@@ -92,7 +92,7 @@ public class MenuPrincipal implements ActionListener {
                         "Erro", JOptionPane.ERROR_MESSAGE);
             } else {
                 if (menuClientesAbrir == 0) {
-                    MenuClientes menuClientes = new MenuClientes(this, null, 0);
+                    MenuClientes menuClientes = new MenuClientes(this, null, null, 0);
                     menuClientesAbrir = 1;
 
                 } else {
@@ -121,7 +121,18 @@ public class MenuPrincipal implements ActionListener {
         if (e.getSource() == botaoRelatorios)
         {
             if (databaseMetodos.relatoriosSaoPossiveis(conexao)){
-
+                if (relatoriosAbrir == 0)
+                {
+                    MenuRelatorios menuRelatorios = new MenuRelatorios(this);
+                }
+                else {
+                    JOptionPane.showMessageDialog(menuPrincipal, "Menu de relatórios já está aberto",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(menuPrincipal, "Treine clientes antes de ver relatórios!",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -141,6 +152,8 @@ public class MenuPrincipal implements ActionListener {
     public void updateEventoTreino(int valor) {
         this.eventoTreinoAbrir = valor;
     }
+
+    public void updateMenuRelatorios(int valor){this.relatoriosAbrir = valor; }
 
 
 }

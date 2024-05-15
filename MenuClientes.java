@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -18,17 +18,18 @@ public class MenuClientes {
     JScrollPane listaNomesScroll;
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     LimitadorAbas limitadorAbas;
-
     EventoTreino eventoTreino;
+    MenuRelatorios menuRelatorios;
 
     int escolha;
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
 
     /* escolha serve para usar tanto em InsereCliente quanto em EventoTreino*/
-    MenuClientes(MenuPrincipal menuPrincipal, EventoTreino eventoTreino, int escolha) {
+    MenuClientes(MenuPrincipal menuPrincipal, EventoTreino eventoTreino, MenuRelatorios menuRelatorios, int escolha) {
         JLabel selecionarCliente = new JLabel();
         this.escolha = escolha;
         this.eventoTreino = eventoTreino;
+        this.menuRelatorios = menuRelatorios;
         selecionarCliente.setText("Selecione o cliente");
         selecionarCliente.setFont(new Font("Arial", Font.PLAIN, 15));
         selecionarCliente.setBounds(10, 10, 300, 20);
@@ -70,6 +71,11 @@ public class MenuClientes {
                                 nomeValidado = (String) cpfLista.getSelectedValue();
                                 retornaNomeParaTreino(nomeValidado);
                             }
+                            else if (escolha == 2)
+                            {
+                                nomeValidado = (String) cpfLista.getSelectedValue();
+                                retornaNomeparaRelatorio(nomeValidado);
+                            }
                             else {
                             String[] options = {"EDITAR", "DELETAR"};
                             if (nomeValidado != null) {
@@ -102,9 +108,13 @@ public class MenuClientes {
                                 recarregaLista();
                             }
                         }
-                        else
+                        else if (escolha == 1)
                         {
                             retornaNomeParaTreino(nomeValidado);
+                        }
+                        else if (escolha == 2)
+                        {
+                            retornaNomeparaRelatorio(nomeValidado);
                         }
                     }
                 }
@@ -176,6 +186,13 @@ public class MenuClientes {
     {
         eventoTreino.nomeSelecionado = string;
         eventoTreino.abreMenuTreinos();
+        menuCliente.dispose();
+    }
+
+    public void retornaNomeparaRelatorio (String string)
+    {
+        menuRelatorios.nomeSelecionado = string;
+        menuRelatorios.recuperaInformacoes();
         menuCliente.dispose();
     }
 }

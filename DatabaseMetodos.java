@@ -1,6 +1,5 @@
-package isso;
+package paradigmasTrabalhoUm;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.*;
 

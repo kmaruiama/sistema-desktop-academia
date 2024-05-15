@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +76,7 @@ public class EventoTreino implements ActionListener {
     EventoTreino(MenuPrincipal menuPrincipal) {
         databaseMetodos.createEventoTable(conexao);
         this.menuPrincipal = menuPrincipal;
-        MenuClientes menuClientes = new MenuClientes(null, this, 1);
+        MenuClientes menuClientes = new MenuClientes(null, this, null, 1);
 
 
         eventoTreino.addWindowListener(new WindowListener() {
@@ -174,9 +174,6 @@ public class EventoTreino implements ActionListener {
 
     private void inicializaExercicios() {
         exerciciosInfo = databaseMetodos.retornaInfoExercicios(conexao, treinoSelecionadoUnderline);
-        for (int i : exerciciosInfo) {
-            System.out.println(i);
-        }
 
         if (numeroExercicios >= 1) {
             exercicioUm = new JLabel();
@@ -375,7 +372,6 @@ public class EventoTreino implements ActionListener {
 
     }
 
-
     private String tituloExercicioLabel(int i) {
         String nome = null;
         switch (i) {
@@ -426,6 +422,7 @@ public class EventoTreino implements ActionListener {
     }
 
     public void mantemIntegridadeCargas() {
+        inputValido = 0;
         if (numeroExercicios >= 1) {
             if (mantemIntegridadeTreinos.mantemIntegridade(exercicioUmCarga.getText())) {
                 inputValido++;
@@ -470,6 +467,8 @@ public class EventoTreino implements ActionListener {
         }
         if (numeroExercicios == inputValido) {
             cargasValidadas = true;
+        } else {
+            cargasValidadas = false;
         }
     }
 
@@ -486,9 +485,6 @@ public class EventoTreino implements ActionListener {
         }
     }
 
-    private void setupActionListeners() {
-        finalizarTreino.addActionListener(this);
-    }
 
 
     private void sqlConversor(String inputData) {

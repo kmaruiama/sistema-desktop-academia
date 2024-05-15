@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 /*Essa classe serve para verificar se existe um nome ou CPF igual já inserido
 na database, retorna um warning caso seja nome mas nao deixa inserir caso seja

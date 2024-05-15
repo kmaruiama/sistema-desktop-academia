@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -7,19 +7,13 @@ import javax.swing.event.ListSelectionListener;
 
 public class MenuTreinos {
     EventoTreino eventoTreino;
-
     JList listaTreinos;
-
     JFrame listaTreinosFrame;
-
     JScrollPane listaTreinosScroll;
-
     String[] rawListaTreino;
     String[] listaTreino;
-
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
-
     MenuTreinos(EventoTreino eventoTreino) {
         this.eventoTreino = eventoTreino;
         rawListaTreino = databaseMetodos.resgataTreinosDatabase(conexao);

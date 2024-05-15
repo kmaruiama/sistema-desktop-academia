@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 import javax.swing.*;
 
 /* Essa classe serve simplesmente para checar a concordancia entre o input

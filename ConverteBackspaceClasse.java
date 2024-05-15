@@ -1,4 +1,4 @@
-package isso;
+package paradigmasTrabalhoUm;
 
 public class ConverteBackspaceClasse {
     public String converteBackspace(String string) {
