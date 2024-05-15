@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.util.Date;
 import java.util.List;
 
 public class MenuRelatorios implements ActionListener{
@@ -19,7 +20,6 @@ public class MenuRelatorios implements ActionListener{
     JButton progressaoCargas;
     JFrame menuRelatorios;
     JLabel nomeProprioLabel;
-    JLabel planoLabel;
     JLabel cpfLabel;
     JLabel dataNascimentoLabel;
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
@@ -103,7 +103,6 @@ public class MenuRelatorios implements ActionListener{
                 planoTier.setForeground(new Color(0xc79306));
                 cabecalhoTierMembro.setBackground(Color.WHITE);
                 cabecalhoRelatorios.setBackground(new Color(0xc79306));
-
                 break;
             case 3:
                 tipoPlano = "Premium";
@@ -137,7 +136,11 @@ public class MenuRelatorios implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if (e.getSource()==progressaoCargas)
         {
-            RelatorioCargas relatorioCargas = new RelatorioCargas();
+            RelatorioCargas relatorioCargas = new RelatorioCargas(nomeSelecionado);
+        }
+        if (e.getSource()==datasComparecimento)
+        {
+            DatasComparecimento datasComparecimento = new DatasComparecimento(nomeSelecionado);
         }
 
     }

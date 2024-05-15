@@ -527,6 +527,7 @@ public class EventoTreino implements ActionListener {
         }
         JOptionPane.showMessageDialog(null, "Cliente treinado com sucesso!",
                 "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        menuPrincipal.updateEventoTreino(0);
         eventoTreino.dispose();
     }
 

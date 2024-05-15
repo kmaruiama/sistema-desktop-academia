@@ -30,35 +30,35 @@ public class MenuPrincipal implements ActionListener {
         menuPrincipal.setTitle("Sistema de Academia");
         menuPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         menuPrincipal.setResizable(false);
-        menuPrincipal.setSize(1000, 750);
+        menuPrincipal.setSize(240, 370);
 
         botaoInserirCliente = new JButton();
         botaoInserirCliente.addActionListener(this);
-        botaoInserirCliente.setBounds(100, 50, 200, 50);
+        botaoInserirCliente.setBounds(10, 10, 200, 50);
         botaoInserirCliente.setText("Inserir cliente");
         menuPrincipal.add(botaoInserirCliente);
 
         botaoEditarCliente = new JButton();
         botaoEditarCliente.addActionListener(this);
-        botaoEditarCliente.setBounds(100, 120, 200, 50);
+        botaoEditarCliente.setBounds(10, 70, 200, 50);
         botaoEditarCliente.setText("Editar cliente");
         menuPrincipal.add(botaoEditarCliente);
 
         botaoCriarTreino = new JButton();
         botaoCriarTreino.addActionListener(this);
-        botaoCriarTreino.setBounds(310, 50, 200, 50);
+        botaoCriarTreino.setBounds(10, 130, 200, 50);
         botaoCriarTreino.setText("Criar treino");
         menuPrincipal.add(botaoCriarTreino);
 
         botaoEventoTreino = new JButton();
         botaoEventoTreino.addActionListener(this);
-        botaoEventoTreino.setBounds(310, 120, 200, 50);
+        botaoEventoTreino.setBounds(10, 190, 200, 50);
         botaoEventoTreino.setText("Treinar cliente");
         menuPrincipal.add(botaoEventoTreino);
 
         botaoRelatorios = new JButton();
         botaoRelatorios.addActionListener(this);
-        botaoRelatorios.setBounds(205, 190, 200, 50);
+        botaoRelatorios.setBounds(10, 250, 200, 50);
         botaoRelatorios.setText("Relatórios");
         menuPrincipal.add(botaoRelatorios);
 

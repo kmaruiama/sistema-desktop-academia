@@ -70,25 +70,22 @@ public class MenuClientes {
                             if (escolha == 1) {
                                 nomeValidado = (String) cpfLista.getSelectedValue();
                                 retornaNomeParaTreino(nomeValidado);
-                            }
-                            else if (escolha == 2)
-                            {
+                            } else if (escolha == 2) {
                                 nomeValidado = (String) cpfLista.getSelectedValue();
                                 retornaNomeparaRelatorio(nomeValidado);
-                            }
-                            else {
-                            String[] options = {"EDITAR", "DELETAR"};
-                            if (nomeValidado != null) {
-                                int escolhaEditarDeletar = JOptionPane.showOptionDialog(menuCliente, "Escolha",
-                                        null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
-                                if (escolhaEditarDeletar == 0) {
-                                    limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
-                                } else if (escolhaEditarDeletar == 1) {
-                                    databaseMetodos.deletaCliente(conexao, nomeValidado);
-                                    recarregaLista();
+                            } else {
+                                String[] options = {"EDITAR", "DELETAR"};
+                                if (nomeValidado != null) {
+                                    int escolhaEditarDeletar = JOptionPane.showOptionDialog(menuCliente, "Escolha",
+                                            null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+                                    if (escolhaEditarDeletar == 0) {
+                                        limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
+                                    } else if (escolhaEditarDeletar == 1) {
+                                        databaseMetodos.deletaCliente(conexao, nomeValidado);
+                                        recarregaLista();
+                                    }
                                 }
                             }
-                        }
                         }
                     });
                 } else {
@@ -107,13 +104,9 @@ public class MenuClientes {
                                 databaseMetodos.deletaCliente(conexao, nomeValidado);
                                 recarregaLista();
                             }
-                        }
-                        else if (escolha == 1)
-                        {
+                        } else if (escolha == 1) {
                             retornaNomeParaTreino(nomeValidado);
-                        }
-                        else if (escolha == 2)
-                        {
+                        } else if (escolha == 2) {
                             retornaNomeparaRelatorio(nomeValidado);
                         }
                     }
@@ -138,7 +131,9 @@ public class MenuClientes {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                menuPrincipal.updateMenuClientesAbrir(0);
+                if (menuPrincipal != null) {
+                    menuPrincipal.updateMenuClientesAbrir(0);
+                }
             }
 
             @Override
@@ -182,15 +177,13 @@ public class MenuClientes {
         listaNomes.setModel(model);
     }
 
-    public void retornaNomeParaTreino (String string)
-    {
+    public void retornaNomeParaTreino(String string) {
         eventoTreino.nomeSelecionado = string;
         eventoTreino.abreMenuTreinos();
         menuCliente.dispose();
     }
 
-    public void retornaNomeparaRelatorio (String string)
-    {
+    public void retornaNomeparaRelatorio(String string) {
         menuRelatorios.nomeSelecionado = string;
         menuRelatorios.recuperaInformacoes();
         menuCliente.dispose();

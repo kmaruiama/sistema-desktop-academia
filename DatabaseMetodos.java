@@ -2,6 +2,7 @@ package paradigmasTrabalhoUm;
 
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 public class DatabaseMetodos {
     public Connection conectaDb(String nomeDatabase, String user, String password) {
@@ -161,16 +162,16 @@ public class DatabaseMetodos {
     public void createEventoTable(Connection conexao) {
         Statement statement;
         try {
-            String query =  "CREATE TABLE IF NOT EXISTS lista_eventos (" +
-                            "id SERIAL PRIMARY KEY," +
-                            "treino_titulo VARCHAR(50)," +
-                            "nome VARCHAR(50)," +
-                            "exercicio INT," +
-                            "series INT," +
-                            "repeticoes INT," +
-                            "carga INT," +
-                            "data_treino DATE" +
-                            ");";
+            String query = "CREATE TABLE IF NOT EXISTS lista_eventos (" +
+                    "id SERIAL PRIMARY KEY," +
+                    "treino_titulo VARCHAR(50)," +
+                    "nome VARCHAR(50)," +
+                    "exercicio INT," +
+                    "series INT," +
+                    "repeticoes INT," +
+                    "carga INT," +
+                    "data_treino DATE" +
+                    ");";
 
             statement = conexao.createStatement();
             statement.executeUpdate(query);
@@ -184,7 +185,7 @@ public class DatabaseMetodos {
         Statement statement = null;
         try {
             String query = String.format("INSERT INTO lista_eventos (treino_titulo, nome, exercicio," +
-                                         " series, repeticoes, carga, data_treino) VALUES ('%s', '%s', %d, %d, %d, %d, '%s')",
+                            " series, repeticoes, carga, data_treino) VALUES ('%s', '%s', %d, %d, %d, %d, '%s')",
                     treino_titulo, nome, exercicio, series, repeticoes, carga, data_treino);
             statement = conexao.createStatement();
             statement.executeUpdate(query);
@@ -404,5 +405,73 @@ public class DatabaseMetodos {
             }
         }
     }
-}
 
+    public List<ParametrosUsados> resgatandoDadosCarga(Connection conn, String nome, int exercicio){
+        List<ParametrosUsados> treinoListaInfo = new ArrayList<>();
+
+        try {
+            String string = String.format("SELECT repeticoes, series, carga, data_treino " +
+                    "FROM lista_eventos WHERE nome = '%s' AND exercicio = %d", nome, exercicio);
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(string);
+            while (resultSet.next()) {
+                int repeticoes = resultSet.getInt("repeticoes");
+                int series = resultSet.getInt("series");
+                int carga = resultSet.getInt("carga");
+                Date data_treino = resultSet.getDate("data_treino");
+
+                ParametrosUsados blocoInfo = new ParametrosUsados(repeticoes, series, carga, data_treino);
+                treinoListaInfo.add(blocoInfo);
+            }
+        } catch (SQLException e) {
+            System.out.println("No método resgatandoDadosCarga" + e);
+        }
+        return treinoListaInfo;
+    }
+
+    public static class ParametrosUsados {
+        int repeticoes;
+        int series;
+        int carga;
+        Date data_treino;
+        public ParametrosUsados(int repeticoes, int series, int carga, Date data_treino) {
+            this.repeticoes = repeticoes;
+            this.series = series;
+            this.carga = carga;
+            this.data_treino = data_treino;
+        }
+    }
+
+    public List<String[]> retornaListaFrequencia(Connection connection, String nome) {
+        List<String[]> listaFrequencia = new ArrayList<>();
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            String query = String.format("SELECT treino_titulo, data_treino " +
+                    "FROM lista_eventos WHERE nome = '%s'", nome);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String[] data = new String[2];
+                data[0] = resultSet.getString("treino_titulo");
+                data[1] = resultSet.getString("data_treino");
+                listaFrequencia.add(data);
+            }
+        } catch (SQLException e) {
+            System.out.println("No método retornaListaFreqeuencia: " + e);
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("No bloco finally do método retornaListaFrequencia " + e);
+            }
+        }
+        return listaFrequencia;
+    }
+
+}
