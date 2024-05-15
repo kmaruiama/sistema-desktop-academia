@@ -1,7 +1,5 @@
 package isso;
 
-import javax.swing.plaf.nimbus.State;
-import java.net.ConnectException;
 import java.sql.*;
 import java.util.*;
 
@@ -315,7 +313,6 @@ public class DatabaseMetodos {
         String[] lista = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
-
         try {
             String query = "SELECT nome_treino FROM lista_treinos";
             statement = conexao.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -340,6 +337,60 @@ public class DatabaseMetodos {
             }
         }
         return lista;
+    }
+
+    public int retornaNumeroExercicios(Connection conexao, String string) {
+        int numeroColunas = 0;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            String query = String.format("SELECT COUNT(*) AS rowcount FROM %s", string);
+            statement = conexao.createStatement();
+            resultSet = statement.executeQuery(query);
+            if (resultSet.next()) {
+                numeroColunas = resultSet.getInt("rowcount");
+            }
+        } catch (SQLException e) {
+            System.out.println("no método retornaNumeroExercicios " + e);
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                System.out.println("no bloco finally do método retornaNumeroExercicios: " + e);
+            }
+        }
+        return numeroColunas;
+    }
+
+    public int[] retornaInfoExercicios(Connection conexao, String string) {
+        Statement statement = null;
+        ResultSet resultSet = null;
+        int[] infoArray = {0};
+        try {
+
+            String query = String.format("SELECT * FROM %s", string);
+            statement = conexao.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            resultSet = statement.executeQuery(query);
+
+            int contadorLinha = 0;
+            if (resultSet.last()) {
+                contadorLinha = resultSet.getRow();
+                resultSet.beforeFirst();
+            }
+
+            infoArray = new int[contadorLinha * 3];
+
+            int index = 0;
+            while (resultSet.next()) {
+                infoArray[index++] = resultSet.getInt(1);
+                infoArray[index++] = resultSet.getInt(2);
+                infoArray[index++] = resultSet.getInt(3);
+            }
+        } catch (SQLException e) {
+            System.out.println("No método retornaInfoExercicios: " + e);
+        }
+        return infoArray;
     }
 }
 

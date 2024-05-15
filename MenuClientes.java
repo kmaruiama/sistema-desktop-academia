@@ -175,6 +175,7 @@ public class MenuClientes {
     public void retornaNomeParaTreino (String string)
     {
         eventoTreino.nomeSelecionado = string;
+        eventoTreino.abreMenuTreinos();
         menuCliente.dispose();
     }
 }

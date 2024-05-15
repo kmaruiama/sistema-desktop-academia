@@ -11,6 +11,7 @@ import java.sql.Connection;
 
 public class CriarTreino implements ActionListener {
 
+    ConverteBackspaceClasse converteBackspaceClasse = new ConverteBackspaceClasse();
     DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
     StringBuilder queryTreino = new StringBuilder(200);
@@ -34,7 +35,6 @@ public class CriarTreino implements ActionListener {
     JTextField crucifixoSeries;
     JTextField abdominalSeries;
     JTextField desenvolvimentoSeries;
-
     JTextField legReps;
     JTextField adutoraReps;
     JTextField supinoReps;
@@ -48,11 +48,8 @@ public class CriarTreino implements ActionListener {
     boolean crucifixoPressionado;
     boolean abdominalPressionado;
     boolean desenvolvimentoPressionado;
-
     boolean editarTreino = false;
-
     MenuPrincipal menuPrincipal;
-
     CriarTreino(MenuPrincipal menuPrincipal) {
         this.menuPrincipal = menuPrincipal;
 
@@ -225,37 +222,25 @@ public class CriarTreino implements ActionListener {
         criarTreino.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
-
             }
-
             @Override
             public void windowClosing(WindowEvent e) {
                 menuPrincipal.updateCriarTreinoAbrir(0);
             }
-
             @Override
             public void windowClosed(WindowEvent e) {
-
             }
-
             @Override
             public void windowIconified(WindowEvent e) {
-
             }
-
             @Override
             public void windowDeiconified(WindowEvent e) {
-
             }
-
             @Override
             public void windowActivated(WindowEvent e) {
-
             }
-
             @Override
             public void windowDeactivated(WindowEvent e) {
-
             }
         });
     }
@@ -286,16 +271,15 @@ public class CriarTreino implements ActionListener {
             desenvolvimentoMaquinaAberto.setEnabled(false);
         }
         if (e.getSource() == avisoInsercao) {
-            JOptionPane.showMessageDialog(criarTreino, "Se você esqueceu de inserir valores/clicar no botao em seu treino apenas\n" +
-                    "preencha as informacoes e clique novamente no botao de criar, reiniciar nao é necessario");
+            JOptionPane.showMessageDialog(criarTreino, "Se você esqueceu de inserir valores/clicar no botao em seu treino apenas\n" + "preencha as informacoes e clique novamente no botao de criar, reiniciar nao é necessario");
         }
         if (e.getSource() == reiniciarBotoes) {
             limpaGUI();
         }
         if (e.getSource() == criarTudo) {
-            if (!databaseMetodos.checaTituloTreino(conexao, converteBackspace(inserirTitulo.getText())) || editarTreino) {
+            if (!databaseMetodos.checaTituloTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText())) || editarTreino) {
                 if (!editarTreino) {
-                    databaseMetodos.createTableTreino(conexao, converteBackspace(inserirTitulo.getText()));
+                    databaseMetodos.createTableTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
                 }
                 if (legPressionado) {
                     if (!(legSeries.getText().isEmpty() || legReps.getText().isEmpty())) {
@@ -303,7 +287,6 @@ public class CriarTreino implements ActionListener {
                     } else {
                         JOptionPane.showMessageDialog(criarTreino, "No Leg Press: séries ou repetições estão vazias");
                     }
-
                 }
                 if (adutoraPressionado) {
                     if (!(adutoraSeries.getText().isEmpty() || adutoraReps.getText().isEmpty())) {
@@ -333,62 +316,60 @@ public class CriarTreino implements ActionListener {
                         JOptionPane.showMessageDialog(criarTreino, "No Abdominal Máquina: séries ou repetições estão vazias");
                     }
                 }
-                int opcao = JOptionPane.showConfirmDialog(null, "Treino criado, você quer editar algo?",
-                        "Confirmação", JOptionPane.YES_NO_OPTION);
+                int opcao = JOptionPane.showConfirmDialog(null, "Treino criado, você quer editar algo?", "Confirmação", JOptionPane.YES_NO_OPTION);
                 if (opcao == 0) {
                     editarTreino = true;
                 }
                 if (opcao == 1) {
-                    databaseMetodos.createRowTreinoLista(conexao, converteBackspace(inserirTitulo.getText()));
+                    databaseMetodos.createRowTreinoLista(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
                     limpaGUI();
                     JOptionPane.showMessageDialog(criarTreino, "Treino criado com sucesso!");
                 }
             } else {
-                JOptionPane.showMessageDialog(criarTreino, "Um treino com esse nome já existe, por favor substitua-o",
-                        "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(criarTreino, "Um treino com esse nome já existe, por favor substitua-o", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    public void queryExercicios(int i) {
+    private void queryExercicios(int i) {
         switch (i) {
             case 1:
-                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
+                queryTreino.append("insert into " + converteBackspaceClasse.converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('01', ");
                 querySeriesReps(1);
                 legPressionado = false;
                 break;
 
             case 5:
-                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
+                queryTreino.append("insert into " + converteBackspaceClasse.converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('05', ");
                 querySeriesReps(5);
                 adutoraPressionado = false;
                 break;
 
             case 20:
-                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
+                queryTreino.append("insert into " + converteBackspaceClasse.converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('20', ");
                 querySeriesReps(20);
                 supinoPressionado = false;
                 break;
 
             case 26:
-                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
+                queryTreino.append("insert into " + converteBackspaceClasse.converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('26', ");
                 querySeriesReps(26);
                 crucifixoPressionado = false;
                 break;
 
             case 40:
-                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
+                queryTreino.append("insert into " + converteBackspaceClasse.converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('40', ");
                 querySeriesReps(40);
                 abdominalPressionado = false;
                 break;
 
             case 50:
-                queryTreino.append("insert into " + converteBackspace(inserirTitulo.getText()) + " ");
+                queryTreino.append("insert into " + converteBackspaceClasse.converteBackspace(inserirTitulo.getText()) + " ");
                 queryTreino.append("(exercicioid, series, repeticoes) values ('50', ");
                 querySeriesReps(50);
                 desenvolvimentoPressionado = false;
@@ -396,7 +377,7 @@ public class CriarTreino implements ActionListener {
         }
     }
 
-    public void querySeriesReps(int i) {
+    private void querySeriesReps(int i) {
         String local;
         String queryFinal;
         switch (i) {
@@ -443,18 +424,6 @@ public class CriarTreino implements ActionListener {
                 queryTreino.setLength(0);
                 break;
         }
-    }
-
-    private String converteBackspace(String string) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (char espaco : string.toCharArray()) {
-            if (espaco == ' ') {
-                stringBuilder.append('_');
-            } else {
-                stringBuilder.append(espaco);
-            }
-        }
-        return stringBuilder.toString();
     }
 
     private void limpaGUI() {
