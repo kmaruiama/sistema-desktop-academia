@@ -1,4 +1,9 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
+
+import paradigmasTrabalhoUm.Estrutural.ChecaConcordancia;
+import paradigmasTrabalhoUm.Estrutural.ChecaConcordanciaBanco;
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
+import paradigmasTrabalhoUm.Estrutural.LimitadorAbas;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,15 +32,13 @@ public class InsereCliente implements ActionListener {
     String nomeEditar;
     JFrame frameCliente = new JFrame();
     LimitadorAbas limitadorAbas;
-    DatabaseMetodos databaseMetodos;
     Connection conexao;
 
-    InsereCliente(LimitadorAbas limitadorAbas, String nomeEditar) {
+    public InsereCliente(LimitadorAbas limitadorAbas, String nomeEditar) {
         this.limitadorAbas = limitadorAbas;
         this.nomeEditar = nomeEditar;
 
-        databaseMetodos = new DatabaseMetodos();
-        conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+        conexao = DatabaseMetodos.conectaDb();
 
         frameCliente.setSize(500, 600);
         frameCliente.setTitle("Adicionar cliente");
@@ -321,14 +324,14 @@ public class InsereCliente implements ActionListener {
             {
                 if (nomeEditar == null)
                 {
-                    databaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
+                    DatabaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
                                                       dataCartaoPrep, plano, 0, null);
                     JOptionPane.showMessageDialog(frameCliente, "Cliente inserido com sucesso!",
                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 }
                 else
                 {
-                    databaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
+                    DatabaseMetodos.createRowClientes(conexao, nomePrep, cpfPrep, dataPrep, dataMatriculaPrep, numeroCartaoPrep, cvvPrep,
                                                       dataCartaoPrep, plano, 1, alvoEdicao);
                     JOptionPane.showMessageDialog(frameCliente, "Cliente editado com sucesso!",
                                              "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -339,7 +342,7 @@ public class InsereCliente implements ActionListener {
 
     private void mostraEditarCliente()
     {
-        List<Object[]> infoResgatada = databaseMetodos.retornaInfoClientes(conexao, nomeEditar);
+        List<Object[]> infoResgatada = DatabaseMetodos.retornaInfoClientes(conexao, nomeEditar);
         for (Object[] resultado : infoResgatada)
         {
             nomeInserir.setText((String) resultado[1]);

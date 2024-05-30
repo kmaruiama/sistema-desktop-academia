@@ -1,23 +1,22 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Database;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
 public class DatabaseMetodos {
-    public Connection conectaDb(String nomeDatabase, String user, String password) {
+
+    public static Connection conectaDb() {
         Connection conexao = null;
         try {
             Class.forName("org.postgresql.Driver");
-            conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + nomeDatabase, user, password);
+            conexao = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + "paradigmas_database", "postgres", "admin");
         } catch (Exception e) {
             System.out.println("no método conectaDb: " + e);
         }
         return conexao;
     }
-
-
-    public void createTableCliente(Connection conexao) {
+    public static void createTableCliente(Connection conexao) {
         Statement statement;
         try {
             String query =
@@ -40,7 +39,7 @@ public class DatabaseMetodos {
     }
 
 
-    public void createTableTreino(Connection conexao, String nomeTreino) {
+    public static void createTableTreino(Connection conexao, String nomeTreino) {
         Statement statement;
         try {
             String query =
@@ -56,7 +55,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public void createListaTreino(Connection conexao) {
+    public static void createListaTreino(Connection conexao) {
         Statement statement;
         try {
             String query =
@@ -72,7 +71,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public void createRowTreinoLista(Connection conexao, String nomeTreino) {
+    public static void createRowTreinoLista(Connection conexao, String nomeTreino) {
         Statement statement = null;
         try {
             String query = String.format(
@@ -85,7 +84,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public void createRowClientes(Connection conexao, String nome, String cpf, String dataNascimento,
+    public static void createRowClientes(Connection conexao, String nome, String cpf, String dataNascimento,
                                   String dataMatricula, String numeroCartao, String cvvCartao, String
                                           dataCartao, int opcaoPlano, int funcaoEditarCriar, String cpfReferencia) {
         Statement statement = null;
@@ -111,7 +110,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public List<Object[]> retornaInfoClientes(Connection conexao, String cpfNumero) {
+    public static List<Object[]> retornaInfoClientes(Connection conexao, String cpfNumero) {
         ResultSet resultSet = null;
         Statement statement = null;
         List<Object[]> resultadoColunas = new ArrayList<>();
@@ -149,7 +148,7 @@ public class DatabaseMetodos {
         return resultadoColunas;
     }
 
-    public void createRowTreino(Connection conexao, String query) {
+    public static void createRowTreino(Connection conexao, String query) {
         Statement statement = null;
         try {
             statement = conexao.createStatement();
@@ -159,7 +158,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public void createEventoTable(Connection conexao) {
+    public static void createEventoTable(Connection conexao) {
         Statement statement;
         try {
             String query = "CREATE TABLE IF NOT EXISTS lista_eventos (" +
@@ -180,7 +179,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public void insertEvento(Connection conexao, String treino_titulo, String nome, int exercicio,
+    public static void insertEvento(Connection conexao, String treino_titulo, String nome, int exercicio,
                              int series, int repeticoes, int carga, String data_treino) {
         Statement statement = null;
         try {
@@ -194,7 +193,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public int checaExistencia(Connection conexao, String campo, String nome) {
+    public static int checaExistencia(Connection conexao, String campo, String nome) {
         int stringQuantidade = 0;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -211,7 +210,7 @@ public class DatabaseMetodos {
         return stringQuantidade;
     }
 
-    public String[] resgataNomesDatabase(Connection conexao) {
+    public static String[] resgataNomesDatabase(Connection conexao) {
         String[] lista = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -242,7 +241,7 @@ public class DatabaseMetodos {
         return lista;
     }
 
-    public String[] retornaCpfPorNome(Connection conexao, String nome) {
+    public static String[] retornaCpfPorNome(Connection conexao, String nome) {
         Statement statement = null;
         ResultSet resultSet = null;
         List<String> cpfs = new ArrayList<>();
@@ -260,7 +259,7 @@ public class DatabaseMetodos {
         return cpfs.toArray(new String[0]);
     }
 
-    public void deletaCliente(Connection conexao, String nome) {
+    public static void deletaCliente(Connection conexao, String nome) {
         Statement statement = null;
         try {
             String query = String.format("DELETE FROM clientes where cpf = '%s'", nome);
@@ -271,7 +270,7 @@ public class DatabaseMetodos {
         }
     }
 
-    public boolean checaTituloTreino(Connection conexao, String string) {
+    public static boolean checaTituloTreino(Connection conexao, String string) {
         ResultSet resultSet = null;
         Statement statement = null;
         boolean tabelaExiste = false;
@@ -302,7 +301,7 @@ public class DatabaseMetodos {
         return tabelaExiste;
     }
 
-    public String[] resgataTreinosDatabase(Connection conexao) {
+    public static String[] resgataTreinosDatabase(Connection conexao) {
         String[] lista = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -332,7 +331,7 @@ public class DatabaseMetodos {
         return lista;
     }
 
-    public int retornaNumeroExercicios(Connection conexao, String string) {
+    public static int retornaNumeroExercicios(Connection conexao, String string) {
         int numeroColunas = 0;
         Statement statement = null;
         ResultSet resultSet = null;
@@ -356,7 +355,7 @@ public class DatabaseMetodos {
         return numeroColunas;
     }
 
-    public int[] retornaInfoExercicios(Connection conexao, String string) {
+    public static int[] retornaInfoExercicios(Connection conexao, String string) {
         Statement statement = null;
         ResultSet resultSet = null;
         int[] infoArray = {0};
@@ -386,7 +385,7 @@ public class DatabaseMetodos {
         return infoArray;
     }
 
-    public boolean relatoriosSaoPossiveis(Connection connection) {
+    public static boolean relatoriosSaoPossiveis(Connection connection) {
         ResultSet resultSet = null;
         try {
             DatabaseMetaData dadosDb = connection.getMetaData();
@@ -406,21 +405,18 @@ public class DatabaseMetodos {
         }
     }
 
-    public List<ParametrosUsados> resgatandoDadosCarga(Connection conn, String nome, int exercicio){
+    public static List<ParametrosUsados> resgatandoDadosCarga(Connection conn, String nome, int exercicio){
         List<ParametrosUsados> treinoListaInfo = new ArrayList<>();
-
         try {
-            String string = String.format("SELECT repeticoes, series, carga, data_treino " +
+            String string = String.format("SELECT carga, data_treino " +
                     "FROM lista_eventos WHERE nome = '%s' AND exercicio = %d", nome, exercicio);
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(string);
             while (resultSet.next()) {
-                int repeticoes = resultSet.getInt("repeticoes");
-                int series = resultSet.getInt("series");
                 int carga = resultSet.getInt("carga");
                 Date data_treino = resultSet.getDate("data_treino");
 
-                ParametrosUsados blocoInfo = new ParametrosUsados(repeticoes, series, carga, data_treino);
+                ParametrosUsados blocoInfo = new ParametrosUsados(carga, data_treino);
                 treinoListaInfo.add(blocoInfo);
             }
         } catch (SQLException e) {
@@ -430,19 +426,15 @@ public class DatabaseMetodos {
     }
 
     public static class ParametrosUsados {
-        int repeticoes;
-        int series;
-        int carga;
-        Date data_treino;
-        public ParametrosUsados(int repeticoes, int series, int carga, Date data_treino) {
-            this.repeticoes = repeticoes;
-            this.series = series;
+        public int carga;
+        public Date data_treino;
+        public ParametrosUsados(int carga, Date data_treino) {
             this.carga = carga;
             this.data_treino = data_treino;
         }
     }
 
-    public List<String[]> retornaListaFrequencia(Connection connection, String nome) {
+    public static List<String[]> retornaListaFrequencia(Connection connection, String nome) {
         List<String[]> listaFrequencia = new ArrayList<>();
         Statement statement = null;
         ResultSet resultSet = null;
@@ -473,5 +465,4 @@ public class DatabaseMetodos {
         }
         return listaFrequencia;
     }
-
 }

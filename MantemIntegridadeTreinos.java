@@ -1,4 +1,6 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Estrutural;
+
+import paradigmasTrabalhoUm.Estrutural.ChecaConcordancia;
 
 import javax.swing.*;
 

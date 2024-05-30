@@ -1,4 +1,6 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Relatorios;
+
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,52 +18,45 @@ public class DatasComparecimento {
     JScrollPane listaPresencasScroll;
     String cpfBase;
     String[] listaConvertida;
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+    Connection conexao = DatabaseMetodos.conectaDb();
 
-    DatasComparecimento (String cpfBase)
-    {
+    public DatasComparecimento(String cpfBase) {
         this.cpfBase = cpfBase;
         implementaGuiComparecimento();
     }
-    public void implementaGuiComparecimento ()
-    {
+    public void implementaGuiComparecimento() {
         listaComparecimento = new JFrame();
+        listaComparecimento.setTitle("Datas de comparecimento");
         listaComparecimento.setLayout(null);
-        List<String[]> listaNaoConvertida = databaseMetodos.retornaListaFrequencia(conexao, cpfBase);
+
+        List<String[]> listaNaoConvertida = DatabaseMetodos.retornaListaFrequencia(conexao, cpfBase);
         converteArrayLista(listaNaoConvertida);
+
         listaPresencas = new JList(listaConvertida);
         listaPresencas.setFont(new Font("Arial", Font.PLAIN, 15));
+
         listaPresencasScroll = new JScrollPane(listaPresencas);
-        listaPresencasScroll.setBounds(40, 30, 200, 300);
+        listaPresencasScroll.setBounds(40, 30, 230, 300);
+
         listaComparecimento.add(listaPresencasScroll);
-        listaComparecimento.setSize(300,400);
+        listaComparecimento.setSize(330, 400);
         listaComparecimento.setResizable(false);
         listaComparecimento.setVisible(true);
         listaComparecimento.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     public void converteArrayLista(List<String[]> lista) {
-        List<String> listaConcatenada = new ArrayList<>();
 
         DateTimeFormatter padraoInput = DateTimeFormatter.ISO_DATE;
         DateTimeFormatter padraoBrasileiro = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        for (String[] vetor : lista) {
-            LocalDate data = LocalDate.parse(vetor[1], padraoInput);
-            String dataFormatada = data.format(padraoBrasileiro);
-            String stringConcatenada = vetor[0] + "      " + dataFormatada;
-            listaConcatenada.add(stringConcatenada);
-        }
-        removeRepeticoes(listaConcatenada.toArray(new String[0]));
-    }
-
-    public void removeRepeticoes (String[] vetor)
-    {
-        Set<String> set = new HashSet<>();
-        for (String string : vetor) {
-            set.add(string);
-        }
-        listaConvertida = set.toArray(new String[0]);
+        listaConvertida = lista.stream()
+                .map(vetor -> {
+                    LocalDate data = LocalDate.parse(vetor[1], padraoInput);
+                    String dataFormatada = data.format(padraoBrasileiro);
+                    return vetor[0] + "      " + dataFormatada;
+                })
+                .distinct()
+                .toArray(String[]::new);
     }
 }

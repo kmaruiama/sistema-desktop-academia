@@ -1,8 +1,10 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Estrutural;
 
 /*Essa classe serve para verificar se existe um nome ou CPF igual já inserido
 na database, retorna um warning caso seja nome mas nao deixa inserir caso seja
 CPF */
+
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
 
 import java.sql.Connection;
 
@@ -21,13 +23,7 @@ public class ChecaConcordanciaBanco
                 coluna = "cpf";
                 break;
         }
-        DatabaseMetodos checaLocal = new DatabaseMetodos();
-        Connection conexao = null;
-        conexao = checaLocal.conectaDb("paradigmas_database", "postgres", "admin");
-        if (checaLocal.checaExistencia(conexao, coluna, stringVerificada) > 0)
-        {
-            return true;
-        }
-        else return false;
+        Connection conexao = DatabaseMetodos.conectaDb();
+        return DatabaseMetodos.checaExistencia(conexao, coluna, stringVerificada) > 0;
     }
 }

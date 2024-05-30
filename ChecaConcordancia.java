@@ -1,4 +1,4 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Estrutural;
 import javax.swing.*;
 
 /* Essa classe serve simplesmente para checar a concordancia entre o input
@@ -46,7 +46,7 @@ public class ChecaConcordancia {
             JOptionPane.showMessageDialog(frame, "Erro: no campo " + campoErroString + " input vazio");
             return false;
         }
-        if (!stringVerificada.matches("[a-zA-Z\\s]+") && operacao == 1)
+        if (!stringVerificada.matches("[\\p{L}\\s]+") && operacao == 1)
         {
             JOptionPane.showMessageDialog(frame, "Erro: o campo " + campoErroString + " caractere invalido (numero/simbolo)");
             return false; //erro, nao contem só letras no nome

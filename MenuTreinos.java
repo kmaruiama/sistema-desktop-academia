@@ -1,4 +1,6 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
+
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -12,11 +14,10 @@ public class MenuTreinos {
     JScrollPane listaTreinosScroll;
     String[] rawListaTreino;
     String[] listaTreino;
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+    Connection conexao = DatabaseMetodos.conectaDb();
     MenuTreinos(EventoTreino eventoTreino) {
         this.eventoTreino = eventoTreino;
-        rawListaTreino = databaseMetodos.resgataTreinosDatabase(conexao);
+        rawListaTreino = DatabaseMetodos.resgataTreinosDatabase(conexao);
         listaTreino = new String[rawListaTreino.length];
 
         for (int i = 0; i < rawListaTreino.length; i++) {

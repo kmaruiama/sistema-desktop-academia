@@ -1,4 +1,4 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Estrutural;
 
 public class ConverteBackspaceClasse {
     public String converteBackspace(String string) {

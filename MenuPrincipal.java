@@ -1,4 +1,7 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
+
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
+import paradigmasTrabalhoUm.Estrutural.LimitadorAbas;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,10 +12,8 @@ public class MenuPrincipal implements ActionListener {
     JButton botaoInserirCliente;
     JButton botaoEditarCliente;
     JButton botaoCriarTreino;
-
     JButton botaoEventoTreino;
     JButton botaoRelatorios;
-
     JFrame menuPrincipal = new JFrame();
 
     /*Serve para evitar a abertura de multiplas janelas*/
@@ -20,11 +21,7 @@ public class MenuPrincipal implements ActionListener {
     private int menuClientesAbrir = 0;
     private int criarTreinoAbrir = 0;
     private int eventoTreinoAbrir = 0;
-    private int relatoriosAbrir = 0;
-
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
-
+    Connection conexao = DatabaseMetodos.conectaDb();
     public MenuPrincipal() {
 
         menuPrincipal.setTitle("Sistema de Academia");
@@ -86,7 +83,7 @@ public class MenuPrincipal implements ActionListener {
             }
         }
         if (e.getSource() == botaoEditarCliente) {
-            String[] testeNulidadeNomes = databaseMetodos.resgataNomesDatabase(conexao);
+            String[] testeNulidadeNomes = DatabaseMetodos.resgataNomesDatabase(conexao);
             if (testeNulidadeNomes.length == 0) {
                 JOptionPane.showMessageDialog(menuPrincipal, "Crie clientes antes de editar/excluir!",
                         "Erro", JOptionPane.ERROR_MESSAGE);
@@ -102,8 +99,9 @@ public class MenuPrincipal implements ActionListener {
             }
         }
         if (e.getSource() == botaoEventoTreino) {
-            String[] testeNulidadeNomes = databaseMetodos.resgataNomesDatabase(conexao);
-            String[] testeNulidadeTreino = databaseMetodos.resgataTreinosDatabase(conexao);
+
+            String[] testeNulidadeNomes = DatabaseMetodos.resgataNomesDatabase(conexao);
+            String[] testeNulidadeTreino = DatabaseMetodos.resgataTreinosDatabase(conexao);
 
             if (testeNulidadeTreino.length == 0 || testeNulidadeNomes.length == 0) {
                 JOptionPane.showMessageDialog(menuPrincipal, "Crie treinos e clientes antes de treinar!",
@@ -118,42 +116,25 @@ public class MenuPrincipal implements ActionListener {
                 }
             }
         }
-        if (e.getSource() == botaoRelatorios)
-        {
-            if (databaseMetodos.relatoriosSaoPossiveis(conexao)){
-                if (relatoriosAbrir == 0)
-                {
-                    MenuRelatorios menuRelatorios = new MenuRelatorios(this);
-                }
-                else {
-                    JOptionPane.showMessageDialog(menuPrincipal, "Menu de relatórios já está aberto",
-                            "Erro", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-            else {
+        if (e.getSource() == botaoRelatorios) {
+            if (DatabaseMetodos.relatoriosSaoPossiveis(conexao)) {
+                MenuRelatorios menuRelatorios = new MenuRelatorios();
+            } else {
                 JOptionPane.showMessageDialog(menuPrincipal, "Treine clientes antes de ver relatórios!",
                         "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-
     public void updateInsereClienteAbrir(int valor) {
         this.insereClienteAbrir = valor;
     }
-
     public void updateMenuClientesAbrir(int valor) {
         this.menuClientesAbrir = valor;
     }
-
     public void updateCriarTreinoAbrir(int valor) {
         this.criarTreinoAbrir = valor;
     }
-
     public void updateEventoTreino(int valor) {
         this.eventoTreinoAbrir = valor;
     }
-
-    public void updateMenuRelatorios(int valor){this.relatoriosAbrir = valor; }
-
-
 }

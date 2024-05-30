@@ -1,47 +1,45 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
 
+
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
+import paradigmasTrabalhoUm.Relatorios.DatasComparecimento;
+import paradigmasTrabalhoUm.Relatorios.RelatorioCargas;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.util.Date;
 import java.util.List;
 
-public class MenuRelatorios implements ActionListener{
-    MenuPrincipal menuPrincipal;
+public class MenuRelatorios implements ActionListener {
     String nomeSelecionado;
     String nomeProprio;
     String dataNascimento;
     int plano;
-
     JButton datasComparecimento;
     JButton progressaoCargas;
     JFrame menuRelatorios;
     JLabel nomeProprioLabel;
     JLabel cpfLabel;
     JLabel dataNascimentoLabel;
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
-    MenuRelatorios (MenuPrincipal menuPrincipal)
-    {
-        this.menuPrincipal = menuPrincipal;
+    Connection conexao = DatabaseMetodos.conectaDb();
+
+    MenuRelatorios() {
         MenuClientes menuClientes = new MenuClientes(null, null, this, 2);
     }
 
-    public void recuperaInformacoes()
-    {
-        List<Object[]> infoResgatada = databaseMetodos.retornaInfoClientes(conexao, nomeSelecionado);
+    public void recuperaInformacoes() {
+        List<Object[]> infoResgatada = DatabaseMetodos.retornaInfoClientes(conexao, nomeSelecionado);
         for (Object[] resultado : infoResgatada) {
-        nomeProprio = (String) resultado[1];
-        dataNascimento = (String) resultado[2];
-        plano = (int) resultado [8];
+            nomeProprio = (String) resultado[1];
+            dataNascimento = (String) resultado[2];
+            plano = (int) resultado[8];
         }
         abreMenuRelatorios();
     }
-    private void abreMenuRelatorios()
-    {
+
+    private void abreMenuRelatorios() {
         String tipoPlano = null;
         menuRelatorios = new JFrame();
         menuRelatorios.setSize(350, 230);
@@ -52,14 +50,14 @@ public class MenuRelatorios implements ActionListener{
 
         JLabel cabecalhoRelatorios = new JLabel();
         cabecalhoRelatorios.setOpaque(true);
-        cabecalhoRelatorios.setBounds(0,0, 350, 80);
+        cabecalhoRelatorios.setBounds(0, 0, 350, 80);
         menuRelatorios.add(cabecalhoRelatorios);
 
         nomeProprioLabel = new JLabel();
         nomeProprioLabel.setBackground(new Color(0xffffff));
         nomeProprioLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         nomeProprioLabel.setForeground(Color.WHITE);
-        nomeProprioLabel.setBounds(10,0, 200, 40);
+        nomeProprioLabel.setBounds(10, 0, 200, 40);
         nomeProprioLabel.setText(nomeProprio);
         cabecalhoRelatorios.add(nomeProprioLabel);
 
@@ -67,7 +65,7 @@ public class MenuRelatorios implements ActionListener{
         cpfLabel.setBackground(new Color(0xffffff));
         cpfLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         cpfLabel.setForeground(Color.WHITE);
-        cpfLabel.setBounds(10,18, 200, 40);
+        cpfLabel.setBounds(10, 18, 200, 40);
         cpfLabel.setText(nomeSelecionado);
         cabecalhoRelatorios.add(cpfLabel);
 
@@ -80,7 +78,7 @@ public class MenuRelatorios implements ActionListener{
         dataNascimentoLabel.setBackground(new Color(0xffffff));
         dataNascimentoLabel.setFont(new Font("Arial", Font.PLAIN, 15));
         dataNascimentoLabel.setForeground(Color.WHITE);
-        dataNascimentoLabel.setBounds(10,36, 200, 40);
+        dataNascimentoLabel.setBounds(10, 36, 200, 40);
         dataNascimentoLabel.setText(dataNascimento);
         cabecalhoRelatorios.add(dataNascimentoLabel);
 
@@ -88,8 +86,7 @@ public class MenuRelatorios implements ActionListener{
         planoTier.setBounds(5, 0, 60, 20);
         cabecalhoTierMembro.add(planoTier);
 
-        switch(plano)
-        {
+        switch (plano) {
             case 1:
                 tipoPlano = "Simples";
                 planoTier.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -129,19 +126,15 @@ public class MenuRelatorios implements ActionListener{
         progressaoCargas.addActionListener(this);
         menuRelatorios.add(progressaoCargas);
         menuRelatorios.setVisible(true);
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource()==progressaoCargas)
-        {
+        if (e.getSource() == progressaoCargas) {
             RelatorioCargas relatorioCargas = new RelatorioCargas(nomeSelecionado);
         }
-        if (e.getSource()==datasComparecimento)
-        {
+        if (e.getSource() == datasComparecimento) {
             DatasComparecimento datasComparecimento = new DatasComparecimento(nomeSelecionado);
         }
-
     }
 }

@@ -1,4 +1,8 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
+
+import paradigmasTrabalhoUm.Estrutural.ConverteBackspaceClasse;
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
+import paradigmasTrabalhoUm.Estrutural.MantemIntegridadeTreinos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +18,7 @@ public class CriarTreino implements ActionListener {
     ConverteBackspaceClasse converteBackspaceClasse = new ConverteBackspaceClasse();
 
     MantemIntegridadeTreinos mantemIntegridadeTreinos = new MantemIntegridadeTreinos();
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+    Connection conexao = DatabaseMetodos.conectaDb();
     StringBuilder queryTreino = new StringBuilder(200);
     JLabel exercicioTitulo;
     JLabel seriesTitulo;
@@ -296,8 +299,8 @@ public class CriarTreino implements ActionListener {
         int booleansTotais = somaTotais();
         int inputValido = 0;
         if (!inserirTitulo.getText().isEmpty()) {
-            if (!databaseMetodos.checaTituloTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText())) || editarTreino) {
-                databaseMetodos.createTableTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
+            if (!DatabaseMetodos.checaTituloTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText())) || editarTreino) {
+                DatabaseMetodos.createTableTreino(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
                 if (legPressionado) {
                     if (mantemIntegridadeTreinos.mantemIntegridade(legSeries.getText()) && mantemIntegridadeTreinos.mantemIntegridade(legReps.getText())) {
                         queryExercicios(1);
@@ -358,7 +361,7 @@ public class CriarTreino implements ActionListener {
                         editarTreino = true;
                     }
                     if (opcao == 1 && !inserirTitulo.getText().isEmpty()) {
-                        databaseMetodos.createRowTreinoLista(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
+                        DatabaseMetodos.createRowTreinoLista(conexao, converteBackspaceClasse.converteBackspace(inserirTitulo.getText()));
                         limpaGUI();
                         JOptionPane.showMessageDialog(criarTreino, "Treino criado com sucesso!");
                     }
@@ -426,42 +429,42 @@ public class CriarTreino implements ActionListener {
                 local = "'" + legSeries.getText() + "', '" + legReps.getText() + "');";
                 queryTreino.append(local);
                 queryFinal = queryTreino.toString();
-                databaseMetodos.createRowTreino(conexao, queryFinal);
+                DatabaseMetodos.createRowTreino(conexao, queryFinal);
                 queryTreino.setLength(0);
                 break;
             case 5:
                 local = "'" + adutoraSeries.getText() + "', '" + adutoraReps.getText() + "');";
                 queryTreino.append(local);
                 queryFinal = queryTreino.toString();
-                databaseMetodos.createRowTreino(conexao, queryFinal);
+                DatabaseMetodos.createRowTreino(conexao, queryFinal);
                 queryTreino.setLength(0);
                 break;
             case 20:
                 local = "'" + supinoSeries.getText() + "', '" + supinoReps.getText() + "');";
                 queryTreino.append(local);
                 queryFinal = queryTreino.toString();
-                databaseMetodos.createRowTreino(conexao, queryFinal);
+                DatabaseMetodos.createRowTreino(conexao, queryFinal);
                 queryTreino.setLength(0);
                 break;
             case 26:
                 local = "'" + crucifixoSeries.getText() + "', '" + crucifixoReps.getText() + "');";
                 queryTreino.append(local);
                 queryFinal = queryTreino.toString();
-                databaseMetodos.createRowTreino(conexao, queryFinal);
+                DatabaseMetodos.createRowTreino(conexao, queryFinal);
                 queryTreino.setLength(0);
                 break;
             case 40:
                 local = "'" + abdominalSeries.getText() + "', '" + abdominalReps.getText() + "');";
                 queryTreino.append(local);
                 queryFinal = queryTreino.toString();
-                databaseMetodos.createRowTreino(conexao, queryFinal);
+                DatabaseMetodos.createRowTreino(conexao, queryFinal);
                 queryTreino.setLength(0);
                 break;
             case 50:
                 local = "'" + desenvolvimentoSeries.getText() + "', '" + desenvolvimentoReps.getText() + "');";
                 queryTreino.append(local);
                 queryFinal = queryTreino.toString();
-                databaseMetodos.createRowTreino(conexao, queryFinal);
+                DatabaseMetodos.createRowTreino(conexao, queryFinal);
                 queryTreino.setLength(0);
                 break;
         }

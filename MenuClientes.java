@@ -1,4 +1,7 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
+
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
+import paradigmasTrabalhoUm.Estrutural.LimitadorAbas;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -16,13 +19,12 @@ public class MenuClientes {
     String nomeValidado;
     JList listaNomes;
     JScrollPane listaNomesScroll;
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
     LimitadorAbas limitadorAbas;
     EventoTreino eventoTreino;
     MenuRelatorios menuRelatorios;
 
     int escolha;
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+    Connection conexao = DatabaseMetodos.conectaDb();
 
     /* escolha serve para usar tanto em InsereCliente quanto em EventoTreino*/
     MenuClientes(MenuPrincipal menuPrincipal, EventoTreino eventoTreino, MenuRelatorios menuRelatorios, int escolha) {
@@ -34,7 +36,7 @@ public class MenuClientes {
         selecionarCliente.setFont(new Font("Arial", Font.PLAIN, 15));
         selecionarCliente.setBounds(10, 10, 300, 20);
 
-        nomesDatabase = databaseMetodos.resgataNomesDatabase(conexao);
+        nomesDatabase = DatabaseMetodos.resgataNomesDatabase(conexao);
         listaNomes = new JList(nomesDatabase);
         listaNomes.setFont(new Font("Arial", Font.PLAIN, 15));
 
@@ -44,10 +46,10 @@ public class MenuClientes {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 nomeSelecionado = (String) listaNomes.getSelectedValue();
-                if (databaseMetodos.checaExistencia(conexao, "nome", nomeSelecionado) > 1) {
+                if (DatabaseMetodos.checaExistencia(conexao, "nome", nomeSelecionado) > 1) {
                     JOptionPane.showConfirmDialog(menuCliente, "Duas pessoas possuem esse nome, escolha o CPF",
                             "Atenção", JOptionPane.PLAIN_MESSAGE);
-                    String[] listaCpfs = databaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
+                    String[] listaCpfs = DatabaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
 
                     JFrame listaCpfsFrame = new JFrame();
                     listaCpfsFrame.setSize(435, 300);
@@ -81,7 +83,7 @@ public class MenuClientes {
                                     if (escolhaEditarDeletar == 0) {
                                         limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
                                     } else if (escolhaEditarDeletar == 1) {
-                                        databaseMetodos.deletaCliente(conexao, nomeValidado);
+                                        DatabaseMetodos.deletaCliente(conexao, nomeValidado);
                                         recarregaLista();
                                     }
                                 }
@@ -89,7 +91,7 @@ public class MenuClientes {
                         }
                     });
                 } else {
-                    String[] listaCpfIndividual = databaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
+                    String[] listaCpfIndividual = DatabaseMetodos.retornaCpfPorNome(conexao, nomeSelecionado);
                     if (listaCpfIndividual.length > 0) {
                         nomeValidado = listaCpfIndividual[0];
                     }
@@ -101,7 +103,7 @@ public class MenuClientes {
                             if (escolhaEditarDeletar == 0) {
                                 limitadorAbas = new LimitadorAbas(null, MenuClientes.this, nomeValidado);
                             } else if (escolhaEditarDeletar == 1) {
-                                databaseMetodos.deletaCliente(conexao, nomeValidado);
+                                DatabaseMetodos.deletaCliente(conexao, nomeValidado);
                                 recarregaLista();
                             }
                         } else if (escolha == 1) {
@@ -115,7 +117,7 @@ public class MenuClientes {
         });
 
         menuCliente.setSize(435, 300);
-        menuCliente.setTitle("Adicionar cliente");
+        menuCliente.setTitle("Selecionar cliente");
         menuCliente.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         menuCliente.setLayout(null);
         menuCliente.setResizable(false);
@@ -169,7 +171,7 @@ public class MenuClientes {
 
     public void recarregaLista() {
         nomeValidado = null;
-        nomesDatabase = databaseMetodos.resgataNomesDatabase(conexao);
+        nomesDatabase = DatabaseMetodos.resgataNomesDatabase(conexao);
         DefaultListModel<String> model = new DefaultListModel<>();
         for (String nome : nomesDatabase) {
             model.addElement(nome);

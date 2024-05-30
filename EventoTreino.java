@@ -1,4 +1,8 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.GUI;
+
+import paradigmasTrabalhoUm.Estrutural.ConverteBackspaceClasse;
+import paradigmasTrabalhoUm.Database.DatabaseMetodos;
+import paradigmasTrabalhoUm.Estrutural.MantemIntegridadeTreinos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,17 +20,13 @@ import java.util.Date;
 public class EventoTreino implements ActionListener {
     MenuPrincipal menuPrincipal;
     MantemIntegridadeTreinos mantemIntegridadeTreinos = new MantemIntegridadeTreinos();
-    ChecaConcordancia checaConcordancia;
-
     int inputValido;
     JFrame eventoTreino = new JFrame();
     String nomeSelecionado;
     String treinoSelecionado;
     String treinoSelecionadoUnderline;
-
     String inputFinal;
-    DatabaseMetodos databaseMetodos = new DatabaseMetodos();
-    Connection conexao = databaseMetodos.conectaDb("paradigmas_database", "postgres", "admin");
+    Connection conexao = DatabaseMetodos.conectaDb();
     JLabel dataLabel;
     JTextField dataInserir;
     JLabel exercicioUm;
@@ -74,7 +74,7 @@ public class EventoTreino implements ActionListener {
 
 
     EventoTreino(MenuPrincipal menuPrincipal) {
-        databaseMetodos.createEventoTable(conexao);
+        DatabaseMetodos.createEventoTable(conexao);
         this.menuPrincipal = menuPrincipal;
         MenuClientes menuClientes = new MenuClientes(null, this, null, 1);
 
@@ -124,7 +124,7 @@ public class EventoTreino implements ActionListener {
     public void abrirEventoTreino() {
         ConverteBackspaceClasse c = new ConverteBackspaceClasse();
         treinoSelecionadoUnderline = c.converteBackspace(treinoSelecionado);
-        numeroExercicios = databaseMetodos.retornaNumeroExercicios(conexao, treinoSelecionadoUnderline);
+        numeroExercicios = DatabaseMetodos.retornaNumeroExercicios(conexao, treinoSelecionadoUnderline);
         dimensaoFrame = new Dimension();
 
         switch (numeroExercicios) {
@@ -173,7 +173,7 @@ public class EventoTreino implements ActionListener {
 
 
     private void inicializaExercicios() {
-        exerciciosInfo = databaseMetodos.retornaInfoExercicios(conexao, treinoSelecionadoUnderline);
+        exerciciosInfo = DatabaseMetodos.retornaInfoExercicios(conexao, treinoSelecionadoUnderline);
 
         if (numeroExercicios >= 1) {
             exercicioUm = new JLabel();
@@ -401,7 +401,7 @@ public class EventoTreino implements ActionListener {
         if (e.getSource() == finalizarTreino) {
             mantemIntegridadeData();
             mantemIntegridadeCargas();
-            if (dataValidada && cargasValidadas) {
+            if (dataValidada != null && cargasValidadas != null && dataValidada && cargasValidadas) {
                 inputaDatabaseEventos();
             }
         }
@@ -502,27 +502,27 @@ public class EventoTreino implements ActionListener {
     private void inputaDatabaseEventos() {
 
         if (numeroExercicios >= 1) {
-            databaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[0],
+            DatabaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[0],
                     exerciciosInfo[1], exerciciosInfo[2], Integer.parseInt(exercicioUmCarga.getText()), inputFinal);
         }
         if (numeroExercicios >= 2) {
-            databaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[3],
+            DatabaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[3],
                     exerciciosInfo[4], exerciciosInfo[5], Integer.parseInt(exercicioDoisCarga.getText()), inputFinal);
         }
         if (numeroExercicios >= 3) {
-            databaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[6],
+            DatabaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[6],
                     exerciciosInfo[7], exerciciosInfo[8], Integer.parseInt(exercicioTresCarga.getText()), inputFinal);
         }
         if (numeroExercicios >= 4) {
-            databaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[9],
+            DatabaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[9],
                     exerciciosInfo[10], exerciciosInfo[11], Integer.parseInt(exercicioQuatroCarga.getText()), inputFinal);
         }
         if (numeroExercicios >= 5) {
-            databaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[12],
+            DatabaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[12],
                     exerciciosInfo[13], exerciciosInfo[14], Integer.parseInt(exercicioCincoCarga.getText()), inputFinal);
         }
         if (numeroExercicios >= 6) {
-            databaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[15],
+            DatabaseMetodos.insertEvento(conexao, treinoSelecionado, nomeSelecionado, exerciciosInfo[15],
                     exerciciosInfo[16], exerciciosInfo[17], Integer.parseInt(exercicioSeisCarga.getText()), inputFinal);
         }
         JOptionPane.showMessageDialog(null, "Cliente treinado com sucesso!",

@@ -1,11 +1,15 @@
-package paradigmasTrabalhoUm;
+package paradigmasTrabalhoUm.Estrutural;
 
+
+import paradigmasTrabalhoUm.GUI.InsereCliente;
+import paradigmasTrabalhoUm.GUI.MenuClientes;
+import paradigmasTrabalhoUm.GUI.MenuPrincipal;
 
 public class LimitadorAbas
     {
         MenuPrincipal principalLocal;
         MenuClientes clientesLocal;
-        LimitadorAbas (MenuPrincipal principalLocal, MenuClientes clientesLocal, String nome)
+        public LimitadorAbas (MenuPrincipal principalLocal, MenuClientes clientesLocal, String nome)
         {
             this.principalLocal = principalLocal;
             this.clientesLocal = clientesLocal;
